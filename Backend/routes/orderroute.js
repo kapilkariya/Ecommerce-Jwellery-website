@@ -1,0 +1,21 @@
+import express from 'express'
+import {placeorder, placeorderstripe,placeorderrazorpay,allorders,userorders,updatestatus} from '../controlers/ordercontroller.js'
+import adminauth from '../middleware/adminauth.js'
+import authuser from '../middleware/auth.js'
+
+const orderRouter = express.Router()
+
+// Admin Features
+orderRouter.post('/list', adminauth, allorders)
+orderRouter.post('/status', adminauth, updatestatus)
+
+// Payment Features
+orderRouter.post('/place', authuser, placeorder)
+orderRouter.post('/stripe', authuser, placeorderstripe)
+orderRouter.post('/razorpay', authuser, placeorderrazorpay)
+
+// User Feature
+orderRouter.post('/userorders', authuser, userorders)
+
+export default orderRouter
+
