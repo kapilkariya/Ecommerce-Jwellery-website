@@ -140,7 +140,7 @@ const ShopContextProvider = (props) => {
                 toast.error(error.message)
             }
         }
-        catch {
+        catch(error) {
             console.log(error.message)
             toast.error(error.message)
         }
