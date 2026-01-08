@@ -37,7 +37,7 @@ const loginuser = async (req, res) => {
 const registeruser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
+    console.log(req.body)
     //checking if user exists
     const exists = await userModel.findOne({email});
     if (exists) {
@@ -46,7 +46,7 @@ const registeruser = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.json({ success: "false", message: "please enter valid email" })
     }
-    if (password.length < 8) {
+    if (password.length < 2) {
       return res.json({ success: "false", message: "please enter strong password" })
     }
 

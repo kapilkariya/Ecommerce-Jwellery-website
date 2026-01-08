@@ -56,6 +56,7 @@ const Add = ({ token }) => {
       }
       else{
         toast.error(response.data.message)
+        console.log(response.data.message)
       }
     }
     catch (error) {

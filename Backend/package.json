@@ -24,5 +24,8 @@
     "razorpay": "^2.9.6",
     "stripe": "^19.1.0",
     "validator": "^13.15.15"
+  },
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.9.12"
   }
 }
