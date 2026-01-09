@@ -21,7 +21,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://ecommerce-jwellery-website-miwq.vercel.app',
-  'https://ecommerce-jwellery-website.vercel.app',
+  'https://ecommerce-jwellery-website.vercel.app',  
   process.env.CLIENT_URL,
   process.env.ADMIN_URL
 ];
