@@ -7,24 +7,44 @@ import userrouter from './routes/userrouter.js'
 import productrouter from './routes/productroute.js'
 import cartrouter from './routes/cartroute.js'
 import orderRouter from './routes/orderroute.js'
+import authroute from './routes/authroute.js'
+import "./config/passport.js"
 
 // App Config
 const app = express()
-// const port = process.env.PORT || 3000
 connectDB();
 connectcloudinary();
 
 // middlewares
 app.use(express.json())
-app.use(cors())
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:5174', 
+  process.env.CLIENT_URL,  
+  process.env.ADMIN_URL    
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
+
+app.use('/auth',authroute)
 app.use('/api/user',userrouter);
 app.use('/api/product',productrouter);
 app.use('/api/cart',cartrouter)
 app.use('/api/order',orderRouter)
 
+
+
 app.get('/', (req, res) => {
     res.send("API Working")
 })
 
-// app.listen(port, () => console.log('Server started on PORT : ' + port))
-export default app;
+app.listen(3000, () => console.log('Server started on PORT : 3000'))
+// export default app;
