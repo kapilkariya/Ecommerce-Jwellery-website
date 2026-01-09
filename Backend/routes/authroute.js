@@ -14,7 +14,7 @@ router.get('/google/callback',
     try {
       console.log('CLIENT_URL:', process.env.CLIENT_URL); 
       const token=jwt.sign({id:req.user._id},process.env.JWT_SECRET,{expiresIn:'7d'})
-      res.redirect(`${process.env.CLIENT_URL}/auth-success?token=${token}`)
+      res.redirect(`${process.env.CLIENT_URL}/login?token=${token}`)
     } catch (error) {
       console.log("google errror",error)
       res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`)

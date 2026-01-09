@@ -14,6 +14,22 @@ const Login = () => {
   
 
   const handleSubmit = async (e) => {
+
+    useEffect(() => {
+        const handleauth = async () => {
+          const params = new URLSearchParams(window.location.search);
+          const accesstoken = params.get("token")
+          if (accesstoken) {
+            localStorage.setItem('token', accesstoken);
+            settoken(accesstoken);
+            navigate('/')
+            window.history.replaceState({}, document.title, "/");
+          }
+        }
+        handleauth()
+      }, [])
+    
+
     //to prevent reloading of page 
     e.preventDefault()
     try {
