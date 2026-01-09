@@ -18,10 +18,12 @@ connectcloudinary();
 // middlewares
 app.use(express.json())
 const allowedOrigins = [
-  'http://localhost:5173', 
-  'http://localhost:5174', 
-  process.env.CLIENT_URL,  
-  process.env.ADMIN_URL    
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://ecommerce-jwellery-website-miwq.vercel.app',
+  'https://ecommerce-jwellery-website.vercel.app',
+  process.env.CLIENT_URL,
+  process.env.ADMIN_URL
 ];
 app.use(cors({
   origin: function (origin, callback) {
@@ -34,16 +36,16 @@ app.use(cors({
   credentials: true
 }));
 
-app.use('/auth',authroute)
-app.use('/api/user',userrouter);
-app.use('/api/product',productrouter);
-app.use('/api/cart',cartrouter)
-app.use('/api/order',orderRouter)
+app.use('/auth', authroute)
+app.use('/api/user', userrouter);
+app.use('/api/product', productrouter);
+app.use('/api/cart', cartrouter)
+app.use('/api/order', orderRouter)
 
 
 
 app.get('/', (req, res) => {
-    res.send("API Working")
+  res.send("API Working")
 })
 
 // app.listen(3000, () => console.log('Server started on PORT : 3000'))
