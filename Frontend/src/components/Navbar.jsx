@@ -4,6 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
   const [visible, setvisible] = useState(false);
+  const [open, setopen] = useState(false);
   const { showsearch, setshowsearch, getcartcount,token,settoken,setcartitems } = useContext(ShopContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,8 +68,8 @@ const Navbar = () => {
         <div className='relative group'>
           <div className="profileicon ">
           </div>
-          <img onClick={()=>token?null:navigate('/login')} className='h-6' src="/icons/profileicon.svg" alt="" />
-          {token && <div className=' absolute right-0  group-hover:block hidden  ' >
+          <img onClick={()=>token?setopen(prev=>!prev):navigate('/login')} className='h-6' src="/icons/profileicon.svg" alt="" />
+          {token && <div className={` absolute right-0 ${open?'block':'hidden'} group-hover:block  `} >
             <ul className='p-2 w-[110px] bg-slate-100 text-gray-500  rounded-lg my-5'>
               <li className='m-2 cursor-pointer hover:text-black hover:font-bold '>MyProfile</li>
               <li onClick={()=>navigate('/order')} className='m-2 cursor-pointer hover:text-black hover:font-bold'>Orders</li>
