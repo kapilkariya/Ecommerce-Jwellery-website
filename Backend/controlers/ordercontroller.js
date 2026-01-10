@@ -2,13 +2,15 @@ import orderModel from "../models/ordermodel.js";
 import userModel from "../models/usermodel.js";
 import jwt from "jsonwebtoken";
 import razorpay from 'razorpay';
+import sendmail from "../utils/sendmail.js";
+import send from "../utils/send.js";
 
-const currency='inr'
-const deliverycharge=10
+const currency = 'inr'
+const deliverycharge = 10
 
-const razorpayinstance=new razorpay({
-  key_id:process.env.RAZORPAY_ID,
-  key_secret:process.env.RAZORPAY_SECRET
+const razorpayinstance = new razorpay({
+  key_id: process.env.RAZORPAY_ID,
+  key_secret: process.env.RAZORPAY_SECRET
 })
 
 // Place order (COD)
@@ -19,9 +21,15 @@ const placeorder = async (req, res) => {
 
     // Decode token to get userId
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userid = decoded.id; 
+    const userid = decoded.id;
+    const usr = await userModel.findById(userid).select('email')
+    const mail = usr.email;
 
     const { items, amount, address } = req.body;
+
+    send('client', mail, amount, address);
+    send('admin', mail, amount, address);
+
 
     const orderdata = {
       userid,       // from token
@@ -36,7 +44,7 @@ const placeorder = async (req, res) => {
 
     const neworder = new orderModel(orderdata);
     await neworder.save();
-
+    // sendmail()
     await userModel.findByIdAndUpdate(userid, { cartdata: {} });
 
     res.json({ success: true, message: "Order placed successfully" });
@@ -57,8 +65,13 @@ const placeorderrazorpay = async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userid = decoded.id;
+    const usr = await userModel.findById(userid).select('email')
+    const mail = usr.email;
 
     const { items, amount, address } = req.body;
+
+    send('client', mail, amount, address);
+    send('admin', mail, amount, address);
 
     // SAVE FIRST
     const newOrder = await orderModel.create({
@@ -103,8 +116,15 @@ const varifyrazorpay = async (req, res) => {
         payment: true,
         status: "Order Placed"
       });
+      const usr = await userModel.findById(userid).select('email');
+      const mail = usr.email;
 
-      await userModel.findByIdAndUpdate(userid, { cartdata: {} });
+      const order = await orderModel.findById(orderinfo.receipt);
+
+      send('client', mail, order.amount, order.address);
+      send('admin', mail, order.amount, order.address);
+
+      await userModel.findByIdAndUpdate(userid, { cartdata:{}});
 
       return res.json({ success: true, message: "Payment successful" });
     }
@@ -120,12 +140,12 @@ const varifyrazorpay = async (req, res) => {
 };
 
 //all ordders data for admin panel
-const allorders= async (req,res)=>{
-  try{
-    const orders=await orderModel.find();
-    res.json({success:true,orders})
+const allorders = async (req, res) => {
+  try {
+    const orders = await orderModel.find();
+    res.json({ success: true, orders })
   }
-  catch(error){
+  catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
@@ -157,15 +177,15 @@ const userorders = async (req, res) => {
 
 
 //update order status
-const updatestatus= async (req,res)=>{
-  try{
-    const {orderid,status}=req.body
-    await orderModel.findByIdAndUpdate(orderid,{status})
-    res.json({success:true,message:"status updated"})
+const updatestatus = async (req, res) => {
+  try {
+    const { orderid, status } = req.body
+    await orderModel.findByIdAndUpdate(orderid, { status })
+    res.json({ success: true, message: "status updated" })
   }
-  catch(error){
+  catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
 }
-export {varifyrazorpay,placeorder,placeorderrazorpay,allorders,userorders,updatestatus}
+export { varifyrazorpay, placeorder, placeorderrazorpay, allorders, userorders, updatestatus }
