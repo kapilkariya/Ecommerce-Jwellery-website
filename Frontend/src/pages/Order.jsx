@@ -48,30 +48,30 @@ const Order = () => {
         <Title title1={'MY'} title2={'ORDERS'} />
       </div>
       <div>
-        {orderdata.map((item, index) => (
-          <div key={index} className="my-10 flex items-start p-4 border-b border-gray-100 bg-white shadow-sm">
-            <img src={item.images?.[0] || ""} alt="Product Image" className="w-30 h-30 object-cover rounded-md mr-4 flex-shrink-0" />
-            <div className="flex-grow flex flex-col justify-center">
-              <p className="text-base font-semibold text-gray-900 mb-1">{item.name || "Product Name"}</p>
-              <p className="text-sm text-gray-600 mb-1">
-                <span className="font-bold text-gray-800 mr-2">{currency}{item.price || 0}</span>
-                <span className="mr-2">Quantity: {item.quantity || 1}</span>
-                <span>Size: {item.size || "N/A"}</span>
-              </p>
-              <p className="text-sm text-gray-400">Date: {new Date(item.date).toLocaleDateString()}</p>
-              <p className="text-sm text-gray-400">Payment: {item.paymentmethod}</p>
-            </div>
-            <div className="flex flex-col items-end justify-between h-full ml-4">
-              <div className="flex items-center text-green-600 text-xs font-medium whitespace-nowrap mb-4 mr-3">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span> {item.status}
-              </div>
-              <button onClick={loadorderdata} className="border border-gray-300 py-2 px-3 text-sm text-gray-700 hover:text-gray-900 font-medium whitespace-nowrap transition duration-150">
-                Track Order
-              </button>
-            </div>
-          </div>
-        ))}
+  {orderdata.map((item, index) => (
+    <div key={index} className="my-5 sm:my-10 flex flex-col sm:flex-row items-start p-4 border-b border-gray-100 bg-white shadow-sm">
+      <img src={item.images?.[0] || ""} alt="Product Image" className="w-full sm:w-30 h-auto sm:h-30 object-cover rounded-md mb-3 sm:mb-0 sm:mr-4 flex-shrink-0" />
+      <div className="flex-grow flex flex-col justify-center w-full sm:w-auto">
+        <p className="text-base font-semibold text-gray-900 mb-1">{item.name || "Product Name"}</p>
+        <p className="text-sm text-gray-600 mb-1 flex flex-wrap gap-1 sm:gap-0">
+          <span className="font-bold text-gray-800 mr-2">{currency}{item.price || 0}</span>
+          <span className="mr-2">Quantity: {item.quantity || 1}</span>
+          <span>Size: {item.size || "N/A"}</span>
+        </p>
+        <p className="text-sm text-gray-400">Date: {new Date(item.date).toLocaleDateString()}</p>
+        <p className="text-sm text-gray-400">Payment: {item.paymentmethod}</p>
       </div>
+      <div className="flex flex-row sm:flex-col items-start sm:items-end justify-between w-full sm:w-auto mt-3 sm:mt-0 sm:ml-4">
+        <div className="flex items-center text-green-600 text-xs font-medium whitespace-nowrap mr-4 sm:mr-3 sm:mb-4">
+          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span> {item.status}
+        </div>
+        <button onClick={loadorderdata} className="border border-gray-300 py-2 px-3 text-sm text-gray-700 hover:text-gray-900 font-medium whitespace-nowrap transition duration-150">
+          Track Order
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
     </div>
   );
 };
