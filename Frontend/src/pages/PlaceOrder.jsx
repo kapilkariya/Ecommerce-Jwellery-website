@@ -19,7 +19,7 @@ const PlaceOrder = () => {
     zipcode: '',
     country: '',
     phone: ''
-  }, [])
+  })
   const onchangehandler = (e) => {
     const name = e.target.name
     const value = e.target.value
@@ -126,7 +126,7 @@ const PlaceOrder = () => {
 
 
   return (
-    <form className='w-[90vw] md:w-[80vw] my-10 mx-auto flex flex-col lg:flex-row justify-between gap-8 lg:gap-0'>
+    <form onSubmit={onsubmithandler} className='w-[90vw] md:w-[80vw] my-10 mx-auto flex flex-col lg:flex-row justify-between gap-8 lg:gap-0'>
       <div className='w-full lg:w-auto'>
         <div className='flex justify-start'>
           <Title title1={'DELEVERY'} title2={'INFORMATION'} />
@@ -179,11 +179,11 @@ const PlaceOrder = () => {
       <div className='w-full lg:w-auto mt-8 lg:mt-0'>
         <div><Carttotal /></div>
         <div className='flex flex-col sm:flex-row justify-between gap-3 my-5'>
-          <button type='button' onClick={() => setmethod('razorpay')} className={`w-full sm:w-[30%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'razorpay' ? 'border-orange-600' : ''}`}><img className='h-7 mx-auto sm:mx-0' src="icons/Razorpay.png" alt="" /></button>
-          <button type='button' onClick={() => setmethod('cod')} className={`w-full sm:w-[30%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'cod' ? 'border-orange-600' : ''}`}>CASH ON DELIVERY</button>
+          <button type='button' onClick={() => setmethod('razorpay')} className={`w-full sm:w-[50%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'razorpay' ? 'border-orange-600' : ''}`}><img className='h-7 mx-auto sm:mx-0' src="icons/Razorpay.png" alt="" /></button>
+          <button type='button' onClick={() => setmethod('cod')} className={`w-full sm:w-[50%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'cod' ? 'border-orange-600' : ''}`}>CASH ON DELIVERY</button>
         </div>
         <div className='flex justify-end'>
-          <button onClick={onsubmithandler} type='submit' className='bg-black text-white text-sm font-medium px-6 py-3 my-4 active:bg-gray-600 w-full sm:w-auto'>PROCEED TO CHECKOUT</button>
+          <button type='submit' className='bg-black text-white text-sm font-medium px-6 py-3 my-4 active:bg-gray-600 w-full sm:w-auto'>PROCEED TO CHECKOUT</button>
         </div>
       </div>
     </form>
