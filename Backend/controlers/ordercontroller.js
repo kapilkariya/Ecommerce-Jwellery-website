@@ -1,14 +1,11 @@
 import orderModel from "../models/ordermodel.js";
 import userModel from "../models/usermodel.js";
 import jwt from "jsonwebtoken";
-import Stripe from 'stripe';
 import razorpay from 'razorpay';
 
 const currency='inr'
 const deliverycharge=10
 
-//gateway stripe
-const stripe=new Stripe(process.env.STRIPE_SECRET_KEY)
 const razorpayinstance=new razorpay({
   key_id:process.env.RAZORPAY_ID,
   key_secret:process.env.RAZORPAY_SECRET
@@ -50,35 +47,6 @@ const placeorder = async (req, res) => {
 };
 
 
-//placing order using stripe method
-const placeorderstripe= async (req,res)=>{
-  try {
-    const token = req.headers.token;
-    if (!token) return res.status(401).json({ success: false, message: "Not authorized" });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userid = decoded.id; 
-    const {items,amount,address}= req.body;
-    const {origin} =req.headers
-
-     const orderdata = {
-      userid,       
-      items,
-      amount,
-      address,
-      paymentmethod: "stripe",
-      payment: false,
-      date: Date.now(),
-    };
-    
-    const neworder = new orderModel(orderdata);
-    await neworder.save();
-
-    
-  } catch (error) {
-    
-  }
-}
 
 
 //placing order using razorpay method
@@ -200,4 +168,4 @@ const updatestatus= async (req,res)=>{
     res.json({ success: false, message: error.message });
   }
 }
-export {varifyrazorpay,placeorder, placeorderstripe,placeorderrazorpay,allorders,userorders,updatestatus}
+export {varifyrazorpay,placeorder,placeorderrazorpay,allorders,userorders,updatestatus}

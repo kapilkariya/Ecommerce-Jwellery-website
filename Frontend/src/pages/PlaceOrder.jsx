@@ -179,7 +179,6 @@ const PlaceOrder = () => {
       <div className='w-full lg:w-auto mt-8 lg:mt-0'>
         <div><Carttotal /></div>
         <div className='flex flex-col sm:flex-row justify-between gap-3 my-5'>
-          <button type='button' onClick={() => setmethod('stripe')} className={`w-full sm:w-[30%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'stripe' ? 'border-orange-600' : ''}`}><img className='h-10 mx-auto sm:mx-0' src="icons/stripe.png" alt="" /></button>
           <button type='button' onClick={() => setmethod('razorpay')} className={`w-full sm:w-[30%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'razorpay' ? 'border-orange-600' : ''}`}><img className='h-7 mx-auto sm:mx-0' src="icons/Razorpay.png" alt="" /></button>
           <button type='button' onClick={() => setmethod('cod')} className={`w-full sm:w-[30%] p-2 border border-gray-300 active:bg-gray-200 ${method === 'cod' ? 'border-orange-600' : ''}`}>CASH ON DELIVERY</button>
         </div>
