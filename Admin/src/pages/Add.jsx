@@ -1,10 +1,11 @@
-
-import React, { useState } from 'react'
+import React, { useState, useRef } from "react";
 import axios from 'axios';
 import { backendURL } from '../App';
 import { toast } from 'react-toastify';
 
 const Add = ({ token }) => {
+  // const quillRef = useRef(null);
+
   const [loading, setLoading] = useState(false);
 
   const [image1, setimage1] = useState(false);
@@ -19,6 +20,23 @@ const Add = ({ token }) => {
   const [subCategory, setsubCategory] = useState("Type1");
   const [bestseller, setbestseller] = useState(false);
   const [sizes, setsizes] = useState([]);
+
+  const generatecontent=async()=>{
+    if(!name && !description) return toast.error('please enter title or description')
+      try {
+        setLoading(true)
+        const {data}=await axios.post(backendURL+'/api/product/generate',{prompt:name},{headers:{token}})
+        if(data.success){
+          setdescription(data.content)
+        }
+        else{
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+      finally{setLoading(false)}
+  }
 
   const onsubmithandler = async (e) => {
     e.preventDefault();
@@ -100,6 +118,7 @@ const Add = ({ token }) => {
         <div>
           <label htmlFor="productDescription" className="block text-base font-medium text-gray-800 mb-2">Product description</label>
           <textarea onChange={(e) => setdescription(e.target.value)} value={description} id="productDescription" placeholder="Write content here" rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-y transition duration-150"></textarea>
+          <button type='button' disabled={loading} onClick={generatecontent} className='border-black p-3 '>generate</button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
