@@ -25,6 +25,9 @@ const Cart = () => {
     }
   }, [cartitems,products])
 
+ 
+
+
   return (
     <div className='w-[80vw] mx-auto my-8'>
       <div className='flex justify-start mb-0'>
@@ -66,7 +69,7 @@ const Cart = () => {
       <div className='flex flex-col items-end'>
         <Carttotal />
         <div className='flex justify-end'>
-          <button onClick={()=>{navtoplaceorder()? navigate('/placeorder'): ''}} className='bg-black text-white text-sm font-medium px-6 py-3 my-4 active:bg-gray-600'>PROCEED TO CHECKOUT</button>
+          <button onClick={()=>navtoplaceorder()? navigate('/placeorder'): ''} className='bg-black text-white text-sm font-medium px-6 py-3 my-4 active:bg-gray-600'>PROCEED TO CHECKOUT</button>
         </div>
       </div>
     </div>

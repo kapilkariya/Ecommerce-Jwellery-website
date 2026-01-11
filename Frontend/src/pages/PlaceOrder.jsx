@@ -27,95 +27,137 @@ const PlaceOrder = () => {
     setformdata(data => ({ ...data, [name]: value }))
   }
 
-  const initpay = (order) => {
-  const options = {
-    key: import.meta.env.VITE_RAZORPAY_ID,
-    amount: order.amount,
-    currency: order.currency,
-    name: 'Order Payment',
-    description: 'Order Payment',
-    order_id: order.id,
-    handler: async (response) => {
-      console.log("Payment success:", response)
-      try {
-        const { data } = await axios.post(backendURL + '/api/order/varifyrazorpay', response, { headers: { token } })
-        if (data.success) {
-          toast.success("Payment successful!")
-          await clearcart()
-          navigate('/order')
-        } else {
-          toast.error(data.message)
-        }
-      } catch (error) {
-        console.log(error)
-        toast.error("Payment verification failed")
-      }
-    },
-    modal: {
-      ondismiss: async function () {
-        console.log("Payment dismissed - deleting order")
-        // Call backend to delete order
-        try {
-          await axios.post(backendURL + '/api/order/varifyrazorpay', {
-            razorpay_order_id: order.id
-            // No razorpay_payment_id means cancelled
-          }, { headers: { token } })
-          toast.error("Payment cancelled")
-        } catch (error) {
-          console.log(error)
+  const updateinventory = async   () => {
+    for (const items in cartitems) {
+      for (const s in cartitems[items]) {
+        const quant = cartitems[items][s];
+        const { data } = await axios.post(backendURL + '/api/order/stock', { id: items, size: s, qua: quant }, { headers: { token } });
+        if (!data.success) {
+          toast.error('wrong')
         }
       }
     }
   }
-  const rzp = new window.Razorpay(options)
-  rzp.open()
-}
-  const onsubmithandler = async (e) => {
-    e.preventDefault();
-    try {
-      let orderitems = [];
-      for (const items in cartitems) {
-        for (const item in cartitems[items]) {
-          const iteminfo = structuredClone(products.find(product => product._id === items))
-          if (iteminfo) {
-            iteminfo.size = item
-            iteminfo.quantity = cartitems[items][item]
-            orderitems.push(iteminfo)
+
+  const initpay = (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Order Payment',
+      description: 'Order Payment',
+      order_id: order.id,
+      handler: async (response) => {
+        console.log("Payment success:", response)
+        try {
+          const { data } = await axios.post(backendURL + '/api/order/varifyrazorpay', response, { headers: { token } })
+          if (data.success) {
+            toast.success("Payment successful!")
+            updateinventory();
+            await clearcart()
+            navigate('/order')
+          } else {
+            toast.error(data.message)
+          }
+        } catch (error) {
+          console.log(error)
+          toast.error("Payment verification failed")
+        }
+      },
+      modal: {
+        ondismiss: async function () {
+          console.log("Payment dismissed - deleting order")
+          // Call backend to delete order
+          try {
+            await axios.post(backendURL + '/api/order/varifyrazorpay', {
+              razorpay_order_id: order.id
+              // No razorpay_payment_id means cancelled
+            }, { headers: { token } })
+            toast.error("Payment cancelled")
+          } catch (error) {
+            console.log(error)
           }
         }
       }
-      let orderdata = {
-        // userid: userId,
-        address: formdata,
-        items: orderitems,
-        amount: getcartamount() + delivery_fee,
-        // paymentmethod:method
+    }
+    const rzp = new window.Razorpay(options)
+    rzp.open()
+  }
+  const onsubmithandler = async (e) => {
+    e.preventDefault();
+    try {
+      let a = true
+      console.log(cartitems)
+      for (const items in cartitems) {
+        for (const s in cartitems[items]) {
+          const quant = cartitems[items][s];
+          const { data } = await axios.post(backendURL + '/api/order/check', { id: items, size: s, qua: quant }, { headers: { token } });
+          if (!data.success) {
+            a = false;
+            toast.error(data.message);
+            console.log(data.message);
+          }
+        }
+      }
+      if (a) {
+        toast.success('done')
+        console.log('done')
+
+        let orderitems = [];
+        for (const items in cartitems) {
+          for (const item in cartitems[items]) {
+            const iteminfo = structuredClone(products.find(product => product._id === items))
+            if (iteminfo) {
+              iteminfo.size = item
+              iteminfo.quantity = cartitems[items][item]
+              orderitems.push(iteminfo)
+            }
+          }
+        }
+        let orderdata = {
+          // userid: userId,
+          address: formdata,
+          items: orderitems,
+          amount: getcartamount() + delivery_fee,
+          // paymentmethod:method
+        }
+
+        switch (method) {
+          case 'cod':
+            console.log(orderdata)
+            const response = await axios.post(backendURL + '/api/order/place', orderdata, { headers: { token } })
+            console.log(response.data)
+            if (response.data.success) {
+              updateinventory()
+              await clearcart();
+              navigate('/order')
+            }
+            else {
+              a = false
+              console.log(response.data.message)
+              toast.error(response.data.message)
+            }
+            break;
+
+          case 'razorpay':
+            const responserazorpay = await axios.post(backendURL + '/api/order/razorpay', orderdata, { headers: { token } })
+            if (responserazorpay.data.success) {
+              initpay(responserazorpay.data.order)
+            }
+            else {
+              a = false
+              console.log(response.data.message)
+              toast.error(response.data.message)
+            }
+
+          default:
+            break;
+
+        }
       }
 
-      switch (method) {
-        case 'cod':
-          console.log(orderdata)
-          const response = await axios.post(backendURL + '/api/order/place', orderdata, { headers: { token } })
-          console.log(response.data)
-          if (response.data.success) {
-            await clearcart();
-            navigate('/order')
-          }
-          else {
-            console.log(response.data.message)
-            toast.error(response.data.message)
-          }
-          break;
 
-        case 'razorpay':
-          const responserazorpay = await axios.post(backendURL + '/api/order/razorpay', orderdata, { headers: { token } })
-          if (responserazorpay.data.success) {
-            initpay(responserazorpay.data.order)
-          }
 
-        default:
-          break;
-      }
 
     }
     catch (error) {

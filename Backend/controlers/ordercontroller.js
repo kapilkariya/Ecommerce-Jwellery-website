@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import razorpay from 'razorpay';
 import sendmail from "../utils/sendmail.js";
 import send from "../utils/send.js";
+import productmodel from "../models/productmodel.js";
 
 const currency = 'inr'
 const deliverycharge = 10
@@ -188,4 +189,40 @@ const updatestatus = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 }
-export { varifyrazorpay, placeorder, placeorderrazorpay, allorders, userorders, updatestatus }
+
+//checking if the products in the cart are available to be sold
+
+const checkcart = async (req, res) => {
+  try {
+    const {id,size,qua} =req.body;
+    const prod = await productmodel.findById(id);
+    if(!prod){
+      return res.json({success:false,message:'product not available'})
+    }
+    const available =prod.quant[size];
+    if(available<qua){
+      return res.json({success:false,message:`only ${available} ${prod.name} in ${size} size are available`})
+    }
+    return res.json({success:true,message:'available'})
+  } catch (error) {
+    return res.json({success:false,message:error.message})
+  }
+}
+
+//update all producs buyed 
+
+const updatestock=async(req,res)=>{
+  try {
+    const{id,size,qua}=req.body;
+    const prod=await productmodel.findById(id);
+    const available=prod.quant[size]-qua;
+    prod.quant[size]=available;
+    await prod.save();
+    return res.json({success:true,message:"stock updated"})
+  } catch (error) {
+    return res.json({success:false,message:error.message})
+  }
+}
+
+
+export { varifyrazorpay, placeorder, placeorderrazorpay, allorders, userorders, updatestatus ,checkcart,updatestock}

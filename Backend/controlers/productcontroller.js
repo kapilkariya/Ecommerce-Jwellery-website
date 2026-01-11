@@ -4,7 +4,7 @@ import main from '../config/gemini.js'
 // function to add products
 const addproduct = async (req, res) => {
   try {
-    const { name, description, price, category, subCategory, sizes, bestseller } = req.body
+    const { name, description, price, category, subCategory, sizes,quant, bestseller } = req.body
 
     const image1 = req.files.image1 && req.files.image1[0]
     const image2 = req.files.image2 && req.files.image2[0]
@@ -14,7 +14,7 @@ const addproduct = async (req, res) => {
     const images = [image1, image2, image3, image4].filter((item) => { return item !== undefined })
 
 
-    console.log(name, description, price, category, subCategory, sizes, bestseller)
+    console.log(name, description, price, category, subCategory, sizes,quant, bestseller)
     console.log(images)
     let imagesUrl = await Promise.all(
       images.map(async (item) => {
@@ -23,7 +23,7 @@ const addproduct = async (req, res) => {
       }))
 
     const productdata = {
-      name, description, price: Number(price), category, subCategory, sizes: JSON.parse(sizes), bestseller: bestseller === "true" ? true : false, images: imagesUrl, date: Date.now()
+      name, description, price: Number(price), category, subCategory, sizes: JSON.parse(sizes),quant:JSON.parse(quant), bestseller: bestseller === "true" ? true : false, images: imagesUrl, date: Date.now()
     }
 
     const product = new productModel(productdata);
@@ -56,6 +56,17 @@ const removeproduct = async (req, res) => {
     res.json({ success: false, message: error.message })
   }
 }
+
+//function to update quantity of product
+const updatequantity=async (req,res)=>{
+  try {
+    await productModel.findByIdAndUpdate(req.body.id,{quant:req.body.quantity},{new:true});
+    res.json({success:true,message:"updated successfully"})
+  } catch (error) {
+    res.json({success:false,message:error.message})
+  }
+}
+
 // function to single product info
 const singleproductinfo = async (req, res) => {
   try {
@@ -90,4 +101,4 @@ export const generateContent = async (req, res) => {
   }
 }
 
-export { singleproductinfo, addproduct, removeproduct, listproduct }  
+export { singleproductinfo, addproduct, removeproduct,updatequantity, listproduct }  

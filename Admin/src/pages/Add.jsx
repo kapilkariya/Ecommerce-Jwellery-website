@@ -20,6 +20,12 @@ const Add = ({ token }) => {
   const [subCategory, setsubCategory] = useState("Type1");
   const [bestseller, setbestseller] = useState(false);
   const [sizes, setsizes] = useState([]);
+  const [quant,setquant]=useState({
+    S:0,
+    M:0,
+    L:0,
+    XL:0,
+  })
 
   const generatecontent = async () => {
     if (!name && !description) return toast.error('please enter title or description')
@@ -52,6 +58,7 @@ const Add = ({ token }) => {
       formdata.append("subCategory", subCategory);
       formdata.append("bestseller", bestseller);
       formdata.append("sizes", JSON.stringify(sizes));
+      formdata.append("quant",JSON.stringify(quant))
       formdata.append("date", Date.now());
 
       image1 && formdata.append("image1", image1)
@@ -166,17 +173,21 @@ const Add = ({ token }) => {
       <div className='px-8 py-5'>
         <p className='mb-2'> Product Sizes</p>
         <div className='flex gap-3'>
-          <div onClick={() => setsizes((prev) => prev.includes("S") ? prev.filter(item => item !== "S") : [...prev, "S"])}>
-            <p className={`${sizes.includes("S") ? "bg-gray-500" : "bg-gray-300"}    px-3 py-2 cursor-pointer`} >S</p>
+          <div >
+            <p onClick={() => setsizes((prev) => prev.includes("S") ? prev.filter(item => item !== "S") : [...prev, "S"])} className={`${sizes.includes("S") ? "bg-gray-500" : "bg-gray-300"}  w-10 h-10 flex justify-center items-center  cursor-pointer`} >S</p>
+            <input value={quant.S} onChange={(e)=>setquant(prev=>({...prev,S:Number(e.target.value)}))} className={`${sizes.includes("S")?'':'hidden'} border w-10 h-10 my-4 border-black text-center `} type="text" />
           </div>
-          <div onClick={() => setsizes((prev) => prev.includes("M") ? prev.filter(item => item !== "M") : [...prev, "M"])}>
-            <p className={`${sizes.includes("M") ? "bg-gray-500" : "bg-gray-300"}    px-3 py-2 cursor-pointer`} >M</p>
+          <div >
+            <p onClick={() => setsizes((prev) => prev.includes("M") ? prev.filter(item => item !== "M") : [...prev, "M"])} className={`${sizes.includes("M") ? "bg-gray-500" : "bg-gray-300"}  w-10 h-10 flex justify-center items-center  cursor-pointer`} >M</p>
+            <input value={quant.M} onChange={(e)=>setquant(prev=>({...prev,M:Number(e.target.value)}))} className={`${sizes.includes("M")?'':'hidden'} border w-10 h-10 my-4 border-black text-center`} type="text" />
           </div>
-          <div onClick={() => setsizes((prev) => prev.includes("L") ? prev.filter(item => item !== "L") : [...prev, "L"])}>
-            <p className={`${sizes.includes("L") ? "bg-gray-500" : "bg-gray-300"}    px-3 py-2 cursor-pointer`} >L</p>
+          <div >
+            <p onClick={() => setsizes((prev) => prev.includes("L") ? prev.filter(item => item !== "L") : [...prev, "L"])} className={`${sizes.includes("L") ? "bg-gray-500" : "bg-gray-300"}  w-10 h-10 flex justify-center items-center  cursor-pointer`} >L</p>
+            <input value={quant.L} onChange={(e)=>setquant(prev=>({...prev,L:Number(e.target.value)}))} className={`${sizes.includes("L")?'':'hidden'} border w-10 h-10 my-4 border-black text-center`} type="text" />
           </div>
-          <div onClick={() => setsizes((prev) => prev.includes("XL") ? prev.filter(item => item !== "XL") : [...prev, "XL"])}>
-            <p className={`${sizes.includes("XL") ? "bg-gray-500" : "bg-gray-300"}   px-3 py-2 cursor-pointer`} >XL</p>
+          <div >
+            <p onClick={() => setsizes((prev) => prev.includes("XL") ? prev.filter(item => item !== "XL") : [...prev, "XL"])} className={`${sizes.includes("XL") ? "bg-gray-500" : "bg-gray-300"}  w-10 h-10 flex justify-center items-center  cursor-pointer`} >XL</p>
+            <input value={quant.XL} onChange={(e)=>setquant(prev=>({...prev,XL:Number(e.target.value)}))} className={`${sizes.includes("XL")?'':'hidden'} border w-10 h-10 my-4 border-black text-center`} type="text" />
           </div>
         </div>
       </div>
