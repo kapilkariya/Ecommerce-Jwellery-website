@@ -100,9 +100,6 @@ const PlaceOrder = () => {
         }
       }
       if (a) {
-        toast.success('done')
-        console.log('done')
-
         let orderitems = [];
         for (const items in cartitems) {
           for (const item in cartitems[items]) {

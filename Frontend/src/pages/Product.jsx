@@ -9,6 +9,8 @@ const Product = () => {
   const [productdata, setproductdata] = useState(false)
   const [images, setimage] = useState('');
   const [size, setsize] = useState('');
+  const allsize = ['S', 'M', 'L', 'XL'];
+  let isempty = true
 
   const fetchdata = async () => {
     products.map((item) => {
@@ -21,7 +23,7 @@ const Product = () => {
   }
   useEffect(() => {
     fetchdata();
-  }, [productid,products])
+  }, [productid, products])
 
   return productdata ? (
     <div className='w-[80vw] m-auto'>
@@ -58,11 +60,11 @@ const Product = () => {
             <p className='font-medium my-5'>Select Size</p>
             <div >
               {
-                productdata.sizes.map((item, index) => {
-                  return <button onClick={() => setsize(item)} className={`border border-gray-100 bg-gray-100 mr-3 py-2 px-4 ${item === size ? 'border-orange-600' : ''} `} key={index}>{item}</button>
+                allsize.map((item, index) => {
+                  return <button onClick={() => { setsize(item) }} className={`${productdata.quant[item] < 1 ? 'hidden' : isempty = false}  border border-gray-100 bg-gray-100 mr-3 py-2 px-4 ${item === size ? 'border-orange-600' : ''} `} key={index}>{item}</button>
                 })
               }
-            </div>
+              {isempty && <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.072 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg> Currently unavailable</div>}</div>
           </div>
           <button onClick={() => addtocart(productdata._id, size)} className='text-white bg-black p-3 px-8 rounded-md  active:bg-gray-700' >ADD TO CART</button>
           <hr className='h-[1px] border border-gray-200 my-10' />
