@@ -2,7 +2,7 @@ import React from 'react'
 
 const Navbar = ({settoken}) => {
   return (
-    <div className='flex items-center py-2 px-4 justify-between'>
+    <div className='flex w-full items-center py-2 px-4 justify-between'>
       <div className="logo mr-5 flex items-center space-x-2 cursor-pointer" aria-label="SparkNext home">
         <div className="w-8 h-8">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
