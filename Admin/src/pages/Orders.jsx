@@ -8,7 +8,7 @@ import Slidingbtn from '../components/Slidingbtn';
 
 const Orders = ({ token }) => {
   const [orders, setorders] = useState([]);
-  const [view,setview] = useState('order');
+  const [view,setview] = useState('orders');
   const fetchallorders = async () => {
     if (!token) {
       return null;
