@@ -100,7 +100,7 @@ const List = ({ token }) => {
             <div className="col-span-1">
               <b className="text-gray-700">PRICE</b>
             </div>
-            <div className="col-span-2">
+            <div className="text-center col-span-2">
               <b className="text-gray-700 text-center">ACTION</b>
             </div>
             <div className="col-span-2">
