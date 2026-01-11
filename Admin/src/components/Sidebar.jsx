@@ -24,7 +24,7 @@ const Sidebar = () => {
   const textClasses = "hidden sm:inline-block text-sm whitespace-nowrap";
 
   return (
-    <div className=" min-h-[100vh] w-16 sm:w-56 border-r bg-white transition-all duration-300 flex flex-col shadow-xl font-inter no-scrollbar overflow-y-auto">
+    <div className=" min-h-[100vh] min-w-15 w-16 sm:w-56 border-r bg-white transition-all duration-300 flex flex-col shadow-xl font-inter no-scrollbar overflow-y-auto">
       <h3 className="text-sm font-bold text-gray-800 hidden sm:block p-4 border-b">MENU</h3>
 
       {/* Add Items */}

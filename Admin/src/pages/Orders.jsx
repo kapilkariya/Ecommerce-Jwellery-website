@@ -3,10 +3,12 @@ import axios from 'axios'
 import { backendURL, currency } from '../App'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // also include CSS
+import Slidingbtn from '../components/Slidingbtn';
 
 
 const Orders = ({ token }) => {
   const [orders, setorders] = useState([]);
+  const [view,setview] = useState('order');
   const fetchallorders = async () => {
     if (!token) {
       return null;
@@ -45,12 +47,17 @@ const Orders = ({ token }) => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
   <div className="max-w-7xl mx-auto">
-    <h1 className="text-3xl font-bold text-gray-900 mb-8">Order Management</h1>
+    <div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Order Management</h1>
+      <Slidingbtn view={view} setview={setview}/>
+    </div>
+    {console.log(view)}
     <div className="space-y-6">
       {orders.map((order, index) =>
-        order.items.length > 0 && (
+        order.items.length > 0 &&  ((view==='delivered' && order.status==='Delivered') || (view==='canceller' && order.status==='Cancelled') || (view==='orders' && order.status!=='Delivered') || (view==='all')) &&(
           <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
             <div className="p-6">
+              {console.log(order.status)}
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
                 <div className="flex items-start space-x-4 mb-4 lg:mb-0">
                   <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
