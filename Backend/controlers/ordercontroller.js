@@ -19,7 +19,7 @@ const placeorder = async (req, res) => {
   try {
     const token = req.headers.token;
     if (!token) return res.status(401).json({ success: false, message: "Not authorized" });
-
+ 
     // Decode token to get userId
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userid = decoded.id;

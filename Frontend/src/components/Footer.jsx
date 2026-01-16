@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShopContext } from '../context/ShopContext';
 
 const SocialIcon = ({ path }) => (
   <svg className="w-5 h-5 transition duration-200 hover:text-amber-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -8,7 +9,7 @@ const SocialIcon = ({ path }) => (
 );
 
 const Footer = () => {
-  const {navigate} = useNavigate();
+  const {navigate,setcategory,category,setsubCategory,subCategory,togglecategory,togglesubCategory} =useContext(ShopContext);
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -20,9 +21,9 @@ const Footer = () => {
           <div className="md:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-4 mb-6">
               {/* Logo Icon */}
-              <div onClick={()=>{
+              <div onClick={() => {
                 navigate('/')
-                window.scrollTo({top:0,behaviour:"smooth"})
+                window.scrollTo({ top: 0, behaviour: "smooth" })
               }} className="cursor-pointer relative group">
                 <div className="w-12 h-12 rounded-full border border-amber-400/30 flex items-center justify-center bg-gradient-to-br from-amber-50/5 to-amber-100/5 backdrop-blur-sm shadow-lg group-hover:shadow-amber-500/10 transition-all duration-300">
                   <div className="w-8 h-8 rounded-full border border-amber-400/50 flex items-center justify-center">
@@ -36,9 +37,9 @@ const Footer = () => {
               </div>
 
               {/* Logo Text */}
-              <div onClick={()=>{
+              <div onClick={() => {
                 navigate('/')
-                window.scrollTo({top:0,behaviour:"smooth"})
+                window.scrollTo({ top: 0, behaviour: "smooth" })
               }} className="cursor-pointer flex flex-col">
                 <span className="text-2xl font-light tracking-tight text-white">
                   unifinds
@@ -76,32 +77,48 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-6 pb-2 border-b border-amber-500/20">Shop</h4>
             <ul className="space-y-3">
               <li>
-                <div onClick={() => navigate('/collection')}
-                  className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button 
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   All Collections
-                </div>
+                </button>
               </li>
               <li>
-                <div onClick={() => 
+                <button value={'Rings'}
+                  onClick={() =>{
                     navigate('/collection')
-                  } className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                    togglecategory
+                    // window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   Rings
-                </div>
+                </button>
               </li>
               <li>
-                <div onClick={() => navigate('/collection')} className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   Necklaces
-                </div>
+                </button>
               </li>
               <li>
-                <div onClick={() => navigate('/collection')} className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   Bracelets
-                </div>
+                </button>
               </li>
               <li>
-                <div onClick={() => navigate('/collection')} className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   Mangalsutra
-                </div>
+                </button>
               </li>
             </ul>
           </div>
@@ -111,19 +128,28 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-6 pb-2 border-b border-amber-500/20">Materials</h4>
             <ul className="space-y-3">
               <li>
-                <div onClick={() => navigate('/collection')} className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   American Diamond
-                </div>
+                </button>
               </li>
               <li>
-                <div onClick={() => navigate('/collection')} className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   Anti Tarnish
-                </div>
+                </button>
               </li>
               <li>
-                <div onClick={() => navigate('/collection')} className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
+                <button
+                  onClick={() => navigate('/collection')}
+                  className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
+                >
                   Rajwadi Brass
-                </div>
+                </button>
               </li>
             </ul>
           </div>

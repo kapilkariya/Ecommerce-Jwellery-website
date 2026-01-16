@@ -16,6 +16,25 @@ const ShopContextProvider = (props) => {
     const navigate = useNavigate();
     const [products, setproducts] = useState([]);
     const [token, settoken] = useState('')
+    const [category, setcategory] = useState([]);
+    const [subCategory, setsubCategory] = useState([]);
+
+    const togglecategory = (e) => {
+        if (category.includes(e.target.value)) {
+            setcategory(prev => prev.filter(item => item !== e.target.value))
+        }
+        else {
+            setcategory(prev => [...prev, e.target.value])
+        }
+    }
+    const togglesubCategory = (e) => {
+        if (subCategory.includes(e.target.value)) {
+            setsubCategory(prev => prev.filter(item => item !== e.target.value))
+        }
+        else {
+            setsubCategory(prev => [...prev, e.target.value])
+        }
+    }
 
     const getproductdata = async () => {
         try {
@@ -99,7 +118,7 @@ const ShopContextProvider = (props) => {
             }
         }
     }
-    
+
     const clearcart = async () => {
         setcartitems({}); // clear frontend first
         if (token) {
@@ -142,7 +161,7 @@ const ShopContextProvider = (props) => {
                 toast.error(error.message)
             }
         }
-        catch(error) {
+        catch (error) {
             console.log(error.message)
             toast.error(error.message)
         }
@@ -173,11 +192,12 @@ const ShopContextProvider = (props) => {
     const value = {
         products, currency, delivery_fee,
         searchTerm, setSearchTerm, showsearch, setshowsearch,
-        cartitems, setcartitems, addtocart,clearcart,
+        cartitems, setcartitems, addtocart, clearcart,
         getcartcount, updatequantity, getcartamount,
         navigate, navtoplaceorder,
         backendURL,
-        token, settoken
+        token, settoken,
+        category, setcategory, subCategory, setsubCategory,togglecategory,togglesubCategory
     }
     return (
         <ShopContext.Provider value={value} >

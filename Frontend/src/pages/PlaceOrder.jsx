@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Title from '../components/Title.jsx'
 import Carttotal from '../components/Carttotal.jsx'
 import { ShopContext } from '../context/ShopContext.jsx';
@@ -8,6 +8,7 @@ import { use } from 'react';
 
 const PlaceOrder = () => {
   const [method, setmethod] = useState('cod');
+  const [user, setUser] = useState(null);
   const { navigate, backendURL, token, cartitems, setcartitems, getcartamount, delivery_fee, products, clearcart } = useContext(ShopContext);
   const [formdata, setformdata] = useState({
     firstname: '',
@@ -27,7 +28,7 @@ const PlaceOrder = () => {
     setformdata(data => ({ ...data, [name]: value }))
   }
 
-  const updateinventory = async   () => {
+  const updateinventory = async () => {
     for (const items in cartitems) {
       for (const s in cartitems[items]) {
         const quant = cartitems[items][s];
@@ -38,6 +39,20 @@ const PlaceOrder = () => {
       }
     }
   }
+  const fetchUser = async () => {
+    console.log(backendURL)
+    const res = await axios.get(
+      backendURL + '/api/user/getuser',
+      { headers: { token } }
+    );
+    if (res.data.success) {
+      setUser(res.data.user);
+    }
+  };
+  useEffect(() => {
+    if (token) fetchUser();
+  }, [token]);
+
 
   const initpay = (order) => {
     const options = {
@@ -83,6 +98,58 @@ const PlaceOrder = () => {
     const rzp = new window.Razorpay(options)
     rzp.open()
   }
+
+  const saveadd = async (req, res) => {
+    const values = Object.values(formdata);
+    if (values.some(v => v.trim() === '')) {
+      toast.error('Please fill all address fields');
+      return;
+    }
+    try {
+      const resp = await axios.post(backendURL + '/api/user/address', { address: formdata }, { headers: { token } });
+      if (resp.data.success) {
+        toast.success('address saved')
+        console.log('done')
+        fetchUser()
+      }
+      else {
+        toast.error(resp.data.message)
+      }
+    } catch (error) {
+      console.log('done2')
+      toast.error(error.message)
+    }
+  }
+
+  const setadd = (index) => {
+    const addr = user.address[index];
+
+    setformdata({
+      firstname: addr.firstname,
+      lastname: addr.lastname,
+      email: addr.email,
+      street: addr.street,
+      city: addr.city,
+      state: addr.state,
+      zipcode: addr.zipcode,
+      country: addr.country,
+      phone: addr.phone
+    });
+    console.log(formdata)
+  }
+
+  const remadd = async (index) => {
+    try {
+      const res = await axios.post(backendURL + '/api/user/del', { index }, { headers: { token } })
+      if (res.data.success) {
+        toast.success('deleated')
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+    fetchUser();
+  }
+
   const onsubmithandler = async (e) => {
     e.preventDefault();
     try {
@@ -121,9 +188,7 @@ const PlaceOrder = () => {
 
         switch (method) {
           case 'cod':
-            console.log(orderdata)
             const response = await axios.post(backendURL + '/api/order/place', orderdata, { headers: { token } })
-            console.log(response.data)
             if (response.data.success) {
               updateinventory()
               await clearcart();
@@ -213,6 +278,61 @@ const PlaceOrder = () => {
               className="w-full p-3 border border-gray-300 rounded-md placeholder-gray-500 text-sm focus:ring-1 focus:ring-gray-500 focus:border-gray-500" />
           </div>
 
+        </div>
+        <button
+          type='button'
+          onClick={saveadd}
+          className="px-8 mb-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl "
+        >
+          Save Address
+        </button>
+        {/* addresses  */}
+        <div className='flex flex-wrap gap-4'>
+          {user?.address?.map((addr, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg border border-gray-200 p-5 hover:border-amber-300 hover:shadow-md transition-all duration-300 min-w-[280px] flex-1"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="font-bold text-gray-800">
+                    {addr.firstname} {addr.lastname}
+                  </h3>
+                </div>
+
+                {addr.isDefault && (
+                  <span className="px-2 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded border border-amber-200">
+                    Default
+                  </span>
+                )}
+              </div>
+
+              <div className="space-y-2 text-gray-600 text-sm">
+                <p className="font-medium">{addr.street}</p>
+                <p>{addr.city}, {addr.state}</p>
+                <p>{addr.country} - {addr.zipcode}</p>
+                <div className="flex items-center gap-2 pt-2">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <span>{addr.phone}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100">
+
+                <button type='button' onClick={() => remadd(index)} className="text-sm text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors duration-200 border border-red-200">
+                  Remove
+                </button>
+
+                {!addr.isDefault && (
+                  <button type='button' onClick={() => setadd(index)} className="text-sm bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-4 py-1.5 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md ml-auto">
+                    Use Address
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       <div className='w-full lg:w-auto mt-8 lg:mt-0'>

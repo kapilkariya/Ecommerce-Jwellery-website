@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String},
   googleId: { type: String},
   avatar: { type: String},
-  cartData: { type: Object, default: {} }
+  cartData: { type: Object, default: {} },
+  address: {type:[Object],default:[],}
 }, { minimize: false })
 //this means dont remove empty objects when saving daata
 

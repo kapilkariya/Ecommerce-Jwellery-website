@@ -76,16 +76,7 @@ const Product = () => {
         </div>
       </div>
       {/* description and review  */}
-      <div className='mt-20 mb-10'>
-        <div className='flex'>
-          <b className='border px-5 py-3 text-sm'>Description</b>
-          <p className='border px-5 py-3 text-sm'>Reviews (122)</p>
-        </div>
-        <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum ab nulla corporis temporibus quibusdam iure odit? Tenetur ducimus suscipit possimus perspiciatis vitae laudantium nihil expedita voluptatibus sapiente quo quod, sit iure, nobis voluptatem.</p>
-          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error molestiae dignissimos quae fugit, cum, optio blanditiis porro quas minima, sit magnam. Officiis beatae et at eaque veritatis dignissimos laborum fuga, quam temporibus voluptatem sit commodi hic optio accusantium eos aspernatur.</p>
-        </div>
-      </div>
+      
       {/* display related products  */}
       <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
         <Relatedproducts category={productdata.category} subcategory={productdata.subcategory} />

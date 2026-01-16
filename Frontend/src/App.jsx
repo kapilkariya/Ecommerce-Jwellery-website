@@ -14,7 +14,7 @@ import PlaceOrder from './pages/PlaceOrder';
 import Product from './pages/Product';
 import Searchbar from './components/Searchbar';
 import { ToastContainer, toast } from 'react-toastify';
-import Profile from './components/Profile';
+import Profile from './pages/Profile';
 function App() {
   return (
     <div className="flex flex-col min-h-screen">

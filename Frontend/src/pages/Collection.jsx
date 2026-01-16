@@ -8,27 +8,10 @@ const Collection = () => {
   const { products } = useContext(ShopContext);
   const [visible, setvisible] = useState(false);
   const [filterproducts, setfilterproducts] = useState([]);
-  const [category, setcategory] = useState([]);
-  const [subCategory, setsubCategory] = useState([]);
   const [sorttype, setsorttype] = useState("relavent");
-  const { searchTerm, setSearchTerm, showsearch, setshowsearch } = useContext(ShopContext);
+  const { searchTerm, setSearchTerm, showsearch, setshowsearch,setcategory,category,setsubCategory,subCategory,togglecategory,togglesubCategory} = useContext(ShopContext);
 
-  const togglecategory = (e) => {
-    if (category.includes(e.target.value)) {
-      setcategory(prev => prev.filter(item => item !== e.target.value))
-    }
-    else {
-      setcategory(prev => [...prev, e.target.value])
-    }
-  }
-  const togglesubCategory = (e) => {
-    if (subCategory.includes(e.target.value)) {
-      setsubCategory(prev => prev.filter(item => item !== e.target.value))
-    }
-    else {
-      setsubCategory(prev => [...prev, e.target.value])
-    }
-  }
+  
 
   const applyfilters = () => {
     let copyproduct = products.slice();
@@ -56,7 +39,7 @@ const Collection = () => {
     }
     return copyproduct;
   });
-};
+}; 
 
 
 
