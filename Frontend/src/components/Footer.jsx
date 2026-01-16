@@ -9,7 +9,7 @@ const SocialIcon = ({ path }) => (
 );
 
 const Footer = () => {
-  const {navigate,setcategory,category,setsubCategory,subCategory,togglecategory,togglesubCategory} =useContext(ShopContext);
+  const {navigate,setcategory,category,setsubCategory,subCategory,togglecategory,togglesubCategory,settempcategory,tempcategory} =useContext(ShopContext);
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -57,17 +57,9 @@ const Footer = () => {
 
             {/* Social Media */}
             <div className="flex space-x-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.instagram.com/unifindshub?igsh=cnNlN25reWxqZHFw" target="_blank" rel="noopener noreferrer"
                 className="p-2 bg-gray-800 rounded-full hover:bg-amber-600/20 hover:border-amber-500/30 border border-gray-700 transition-all duration-300">
                 <SocialIcon path="M16 3H8A5 5 0 0 0 3 8v8a5 5 0 0 0 5 5h8a5 5 0 0 0 5-5V8a5 5 0 0 0-5-5ZM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5Zm4-5c0-2.21-1.79-4-4-4s-4 1.79-4 4 1.79 4 4 4 4-1.79 4-4Z" />
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"
-                className="p-2 bg-gray-800 rounded-full hover:bg-amber-600/20 hover:border-amber-500/30 border border-gray-700 transition-all duration-300">
-                <SocialIcon path="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-              </a>
-              <a href="mailto:info@unifinds.com"
-                className="p-2 bg-gray-800 rounded-full hover:bg-amber-600/20 hover:border-amber-500/30 border border-gray-700 transition-all duration-300">
-                <SocialIcon path="M2.25 13.5a8.25 8.25 0 0 1 13.86-5.69l.866.866-5.69 5.69A8.25 8.25 0 0 1 2.25 13.5Zm10.5-6.75a.75.75 0 0 1 .75.75v2.25h2.25a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75v-3a.75.75 0 0 1 .75-.75Z" />
               </a>
             </div>
           </div>
@@ -78,7 +70,14 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <button 
-                  onClick={() => navigate('/collection')}
+                  onClick={() => {
+                    settempcategory('')
+                    navigate('/collection')
+                    setcategory([])
+                    setsubCategory([])
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   All Collections
@@ -87,9 +86,12 @@ const Footer = () => {
               <li>
                 <button value={'Rings'}
                   onClick={() =>{
+                    settempcategory('Rings')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Rings')
                     navigate('/collection')
-                    togglecategory
-                    // window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
@@ -98,7 +100,14 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() =>{
+                    settempcategory('Necklace')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Necklace')
+                    navigate('/collection')
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   Necklaces
@@ -106,7 +115,14 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() =>{
+                    settempcategory('Bracelet')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Bracelet')
+                    navigate('/collection')
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   Bracelets
@@ -114,7 +130,14 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() =>{
+                    settempcategory('Mangalsutra')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Mangalsutra')
+                    navigate('/collection')
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   Mangalsutra
@@ -129,7 +152,14 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() =>{
+                    settempcategory('Americand')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Americand')
+                    navigate('/collection')
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   American Diamond
@@ -137,7 +167,14 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() =>{
+                    settempcategory('Antitarnish')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Antitarnish')
+                    navigate('/collection')
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   Anti Tarnish
@@ -145,7 +182,14 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() =>{
+                    settempcategory('Rajwadi')
+                    setcategory([])
+                    setsubCategory([])
+                    togglecategory('Rajwadi')
+                    navigate('/collection')
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   Rajwadi Brass
@@ -177,11 +221,6 @@ const Footer = () => {
               <li>
                 <div className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
                   Privacy Policy
-                </div>
-              </li>
-              <li>
-                <div className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
-                  Shipping & Returns
                 </div>
               </li>
             </ul>
@@ -223,7 +262,7 @@ const Footer = () => {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
-                    <span>developer@example.com</span>
+                    <span>kapilkariya1105@gmail.com</span>
                   </a>
 
                   <div className="h-3 w-px bg-gray-700"></div>

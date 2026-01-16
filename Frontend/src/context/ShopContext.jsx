@@ -18,21 +18,22 @@ const ShopContextProvider = (props) => {
     const [token, settoken] = useState('')
     const [category, setcategory] = useState([]);
     const [subCategory, setsubCategory] = useState([]);
+    const [tempcategory,settempcategory]=useState('');
 
-    const togglecategory = (e) => {
-        if (category.includes(e.target.value)) {
-            setcategory(prev => prev.filter(item => item !== e.target.value))
+    const togglecategory = (value) => {
+        if (category.includes(value)) {
+            setcategory(prev => prev.filter(item => item !== value))
         }
         else {
-            setcategory(prev => [...prev, e.target.value])
+            setcategory(prev => [...prev,value])
         }
     }
-    const togglesubCategory = (e) => {
-        if (subCategory.includes(e.target.value)) {
-            setsubCategory(prev => prev.filter(item => item !== e.target.value))
+    const togglesubCategory = (value) => {
+        if (subCategory.includes(value)) {
+            setsubCategory(prev => prev.filter(item => item !== value))
         }
         else {
-            setsubCategory(prev => [...prev, e.target.value])
+            setsubCategory(prev => [...prev,value])
         }
     }
 
@@ -197,7 +198,7 @@ const ShopContextProvider = (props) => {
         navigate, navtoplaceorder,
         backendURL,
         token, settoken,
-        category, setcategory, subCategory, setsubCategory,togglecategory,togglesubCategory
+        category, setcategory, subCategory, setsubCategory,togglecategory,togglesubCategory,tempcategory,settempcategory
     }
     return (
         <ShopContext.Provider value={value} >
