@@ -99,6 +99,7 @@ const ShopContextProvider = (props) => {
             }
         }
     }
+    
     const clearcart = async () => {
         setcartitems({}); // clear frontend first
         if (token) {

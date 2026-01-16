@@ -9,7 +9,7 @@ const Collection = () => {
   const [visible, setvisible] = useState(false);
   const [filterproducts, setfilterproducts] = useState([]);
   const [category, setcategory] = useState([]);
-  const [subcategory, setsubcategory] = useState([]);
+  const [subCategory, setsubCategory] = useState([]);
   const [sorttype, setsorttype] = useState("relavent");
   const { searchTerm, setSearchTerm, showsearch, setshowsearch } = useContext(ShopContext);
 
@@ -21,12 +21,12 @@ const Collection = () => {
       setcategory(prev => [...prev, e.target.value])
     }
   }
-  const togglesubcategory = (e) => {
-    if (subcategory.includes(e.target.value)) {
-      setsubcategory(prev => prev.filter(item => item !== e.target.value))
+  const togglesubCategory = (e) => {
+    if (subCategory.includes(e.target.value)) {
+      setsubCategory(prev => prev.filter(item => item !== e.target.value))
     }
     else {
-      setsubcategory(prev => [...prev, e.target.value])
+      setsubCategory(prev => [...prev, e.target.value])
     }
   }
 
@@ -40,8 +40,8 @@ const Collection = () => {
     if (category.length > 0) {
       copyproduct = copyproduct.filter(item => category.includes(item.category));
     }
-    if (subcategory.length > 0) {
-      copyproduct = copyproduct.filter(item => subcategory.includes(item.subcategory));
+    if (subCategory.length > 0) {
+      copyproduct = copyproduct.filter(item => subCategory.includes(item.subCategory));
     }
     setfilterproducts(copyproduct);
   }
@@ -66,11 +66,11 @@ const Collection = () => {
 
   useEffect(() => {
     applyfilters()
-  }, [category, subcategory,searchTerm,products])
+  }, [category, subCategory,searchTerm,products])
 
   useEffect(() => {
     sortproduct()
-  }, [sorttype,category,subcategory])
+  }, [sorttype,category,subCategory])
 
 
   return (
@@ -94,17 +94,29 @@ const Collection = () => {
           <p className='py-1 text-base text-gray-700'>
             <input onClick={togglecategory} type="checkbox" value={'Bangles'} /> Bangles
           </p>
+          <p className='py-1 text-base text-gray-700'>
+            <input onClick={togglecategory} type="checkbox" value={'Mangalsutra'} /> Mangalsutra
+          </p>
+          <p className='py-1 text-base text-gray-700'>
+            <input onClick={togglecategory} type="checkbox" value={'Bracelet'} /> Bracelet
+          </p>
+          <p className='py-1 text-base text-gray-700'>
+            <input onClick={togglecategory} type="checkbox" value={'Earrings'} /> Earrings
+          </p>
+          <p className='py-1 text-base text-gray-700'>
+            <input onClick={togglecategory} type="checkbox" value={'Sets'} /> Sets
+          </p>
         </div>
         <div className={`border border-gray-300 p-4 my-4 sm:block ${visible ? '' : 'hidden'}`}>
           <p className='text-base font-bold pb-1'>TYPE</p>
           <p className='py-1 text-base text-gray-700'>
-            <input type="checkbox" value={'Type1'} onClick={togglesubcategory} /> Type1
+            <input type="checkbox" value={'Antitarnish'} onClick={togglesubCategory} /> Anti-Tarnish
           </p>
           <p className='py-1 text-base text-gray-700'>
-            <input type="checkbox" value={'Type2'} onClick={togglesubcategory} /> Type2
+            <input type="checkbox" value={'Americand'} onClick={togglesubCategory} /> American Diamond
           </p>
           <p className='py-1 text-base text-gray-700'>
-            <input type="checkbox" value={'Type3'} onClick={togglesubcategory} /> Type3
+            <input type="checkbox" value={'Rajwadi'} onClick={togglesubCategory} /> Rajwadi 
           </p>
         </div>
       </div>

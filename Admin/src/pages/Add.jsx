@@ -17,7 +17,7 @@ const Add = ({ token }) => {
   const [description, setdescription] = useState("");
   const [price, setprice] = useState("");
   const [category, setcategory] = useState("Rings");
-  const [subCategory, setsubCategory] = useState("Type1");
+  const [subCategory, setsubCategory] = useState("Antitarnish");
   const [bestseller, setbestseller] = useState(false);
   const [sizes, setsizes] = useState([]);
   const [quant,setquant]=useState({
@@ -143,6 +143,10 @@ const Add = ({ token }) => {
                 <option value="Rings">Rings</option>
                 <option value="Necklace">Necklace</option>
                 <option value="Bangles">Bangles</option>
+                <option value="Mangalsutra">Mangalsutra</option>
+                <option value="Bracelet">Bracelet</option>
+                <option value="Earrings">Earrings</option>
+                <option value="Sets">Sets</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
@@ -154,9 +158,9 @@ const Add = ({ token }) => {
             <label htmlFor="subCategory" className="block text-base font-medium text-gray-800 mb-2">Sub category</label>
             <div className="relative">
               <select onChange={(e) => setsubCategory(e.target.value)} id="subCategory" className="w-full px-3 py-2 border border-gray-300 rounded-lg appearance-none bg-white pr-10 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer transition duration-150" defaultValue="Topwear">
-                <option value="Type1">Type1</option>
-                <option value="Type2">Type2</option>
-                <option value="Type3">Type3</option>
+                <option value="Antitarnish">Anti-Tarnish</option>
+                <option value="Americand">American Diamond</option>
+                <option value="Rajwadi">Rajwadi</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>

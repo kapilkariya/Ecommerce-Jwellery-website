@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import axios from 'axios';
+import Slidingbtn from '../components/Slidingbtn';
 
 const Order = () => {
   const { backendURL, token, currency } = useContext(ShopContext);
   const [orderdata, setorderdata] = useState([]);
+  const [view,setview] = useState('pending');
 
   const loadorderdata = async () => {
     try {
@@ -47,8 +49,9 @@ const Order = () => {
       <div className='flex justify-start mx-2 mt-10'>
         <Title title1={'MY'} title2={'ORDERS'} />
       </div>
+      <div className='mt-10'> <Slidingbtn  view={view} setview={setview}/></div>
       <div>
-  {orderdata.map((item, index) => (
+  {orderdata.map((item, index) => ((item.status==='Delivered' && view==='delivered') || (view==='pending' && item.status!=='Delivered' && item.status!=='Cancelled') || (view==='all') || (view==='cancelled' && item.status==='Cancelled')) && (
     <div key={index} className="my-5 sm:my-10 flex flex-col sm:flex-row items-start p-4 border-b border-gray-100 bg-white shadow-sm">
       <img src={item.images?.[0] || ""} alt="Product Image" className="w-full sm:w-30 h-auto sm:h-30 object-cover rounded-md mb-3 sm:mb-0 sm:mr-4 flex-shrink-0" />
       <div className="flex-grow flex flex-col justify-center w-full sm:w-auto">

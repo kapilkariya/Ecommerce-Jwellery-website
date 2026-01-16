@@ -14,6 +14,7 @@ import PlaceOrder from './pages/PlaceOrder';
 import Product from './pages/Product';
 import Searchbar from './components/Searchbar';
 import { ToastContainer, toast } from 'react-toastify';
+import Profile from './components/Profile';
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -28,6 +29,7 @@ function App() {
           <Route path="/collection" element={<Collection />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/:productid" element={<Product />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/order" element={<Order />} />
           <Route path="/placeorder" element={<PlaceOrder />} />

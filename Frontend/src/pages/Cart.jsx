@@ -4,7 +4,7 @@ import Title from '../components/Title.jsx'
 import Carttotal from '../components/Carttotal.jsx';
 
 const Cart = () => {
-  const { cartitems, currency, products, updatequantity, navigate, navtoplaceorder } = useContext(ShopContext);
+  const { cartitems, currency, products,updatequantity, navigate, navtoplaceorder } = useContext(ShopContext);
   const [cartdata, setcartdata] = useState([])
 
   useEffect(() => {
@@ -51,8 +51,10 @@ const Cart = () => {
                     </div>
                   </div>
                   <div className='col-span-2 grid grid-cols-2 '>
-                    <div className='sm:m-auto' >
-                      <input onClick={(e) => e.target.value === '' || e.target.value === '0' ? null : updatequantity(item._id, item.size, Number(e.target.value))} className='border border-gray-200 w-10 text-center' type="number" min={1} defaultValue={item.qualtity} name="" id="" />
+                    <div className='sm:m-auto flex' >
+                      <div onClick={()=>updatequantity(item._id, item.size,item.qualtity-1)} className='bg-red-500 h-7 w-7 flex justify-center  cursor-pointer items-center rounded-full'>-</div>
+                      <input onClick={(e) => e.target.value === '' || e.target.value === '0' ? null : updatequantity(item._id, item.size, Number(e.target.value))} className=' mx-3 border border-gray-200 w-10 text-center' type="number" min={1} value={item.qualtity} name="" id="" />
+                      <div onClick={()=>updatequantity(item._id, item.size,item.qualtity+1)} className='bg-red-500 h-7 w-7 flex justify-center  cursor-pointer items-center rounded-full'>+</div>
                     </div>
                     <div className='sm:m-auto'>
                       <img onClick={() => updatequantity(item._id, item.size, 0)} className='h-5 sm:h-7' src="/icons/bin.svg" alt="" />

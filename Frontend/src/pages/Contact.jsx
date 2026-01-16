@@ -24,16 +24,7 @@ const Contact = () => {
             </p>
           </div>
 
-          <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Careers at Forever</h3>
-            <p className="text-gray-700 text-sm mb-4">
-              Learn more about our teams and job openings.
-            </p>
-
-            <button className="px-5 py-2 text-sm border border-gray-400 text-gray-700 font-medium rounded-sm hover:bg-gray-50 transition duration-150">
-              Explore Jobs
-            </button>
-          </div>
+          
         </div>
       </div>
       <NewsLetterBox/>

@@ -1,13 +1,26 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef,useEffect, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
   const [visible, setvisible] = useState(false);
   const [open, setopen] = useState(false);
-  const { showsearch, setshowsearch, getcartcount,token,settoken,setcartitems } = useContext(ShopContext);
+  const { showsearch, setshowsearch, getcartcount, token, settoken, setcartitems } = useContext(ShopContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setopen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
 
   const onsearch = () => {
     if (location.pathname != '/collection') {
@@ -16,7 +29,7 @@ const Navbar = () => {
     setshowsearch(true)
   }
 
-  const logout=()=>{
+  const logout = () => {
     localStorage.removeItem('token')
     settoken('')
     setcartitems({})
@@ -25,17 +38,67 @@ const Navbar = () => {
 
   return (
     <div className='flex justify-around m-3' >
+
+      {/* this is logo */}
       <NavLink to='/'>
-        <div className="logo mr-5 flex items-center space-x-2 cursor-pointer" aria-label="SparkNext home">
-          <div className="w-8 h-8">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
-              <path d="M12 3v2.35M16.24 7.76l-1.77 1.77M21 12h-2.35M16.24 16.24l-1.77-1.77M12 21v-2.35M7.76 16.24l1.77-1.77M3 12h2.35M7.76 7.76l1.77 1.77" />
-            </svg>
+        <div className="logo mr-5 flex items-center space-x-2 cursor-pointer group relative">
+          {/* Animated Glow Effect */}
+          <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-amber-100/20 to-transparent opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 rounded-full"></div>
+
+          {/* Premium Diamond Badge */}
+          <div className="relative w-10 h-10 flex items-center justify-center">
+            {/* Platinum Ring */}
+            <div className="absolute inset-0 border-2 border-gray-300/70 rounded-full"></div>
+
+            {/* Diamond Center */}
+            <div className="relative w-6 h-6 transform rotate-45">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 shadow-inner"></div>
+              <div className="absolute inset-0 border border-amber-300/50"></div>
+
+              {/* Diamond Facets */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-amber-400/30"></div>
+              <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-amber-400/30"></div>
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-amber-400/30"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-amber-400/30"></div>
+
+              {/* Center Sparkle */}
+              <div className="absolute inset-1 bg-gradient-to-br from-white to-transparent opacity-60 rounded-sm"></div>
+            </div>
+
+            {/* Floating Particle */}
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full animate-pulse"></div>
           </div>
-          <span className="text-2xl font-bold tracking-tight">
-            <span className="text-slate-800">Spark</span>
-            <span className="bg-gradient-to-r from-indigo-600 to-purple-500 bg-clip-text text-transparent">Next</span>
-          </span>
+
+          {/* Luxury Typography */}
+          <div className="relative">
+            <span className="text-3xl font-black tracking-tighter">
+              <span className="relative">
+                <span className="text-gray-900 drop-shadow-sm">UNI</span>
+                <span className="absolute inset-0 text-gray-900/0 bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+                  UNI
+                </span>
+              </span>
+              <span className="relative ml-1">
+                <span className="bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 bg-clip-text text-transparent drop-shadow-[0_2px_2px_rgba(0,0,0,0.1)]">
+                  FINDS
+                </span>
+                {/* Gold Overlay Effect */}
+                <span className="absolute inset-0 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 bg-clip-text text-transparent opacity-0 group-hover:opacity-40 transition-opacity duration-500">
+                  FINDS
+                </span>
+              </span>
+            </span>
+
+            {/* Professional Tagline */}
+            <div className="absolute -bottom-4 left-0 w-full flex items-center justify-center">
+              <span className="text-[8px] tracking-[0.3em] uppercase text-gray-500 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                PREMIUM JEWELRY
+              </span>
+            </div>
+          </div>
+
+          {/* Subtle Hover Indicator */}
+          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-12 h-[2px] bg-gradient-to-r from-transparent via-amber-600 to-transparent transition-all duration-500"></div>
         </div>
       </NavLink>
 
@@ -65,15 +128,15 @@ const Navbar = () => {
         <div className="search">
           <img onClick={() => { onsearch() }} className='h-7' src="/icons/search.svg" alt="" />
         </div>
-        <div className='relative group'>
+        <div ref={dropdownRef} className='relative group'>
           <div className="profileicon ">
           </div>
-          <img onClick={()=>token?setopen(prev=>!prev):navigate('/login')} className='h-6' src="/icons/profileicon.svg" alt="" />
-          {token && <div className={` absolute right-0 ${open?'block':'hidden'} group-hover:block  `} >
+          <img onClick={() => token ? setopen(prev => !prev) : navigate('/login')} className='h-6' src="/icons/profileicon.svg" alt="" />
+          {token && <div className={` absolute right-0 ${open ? 'block' : 'hidden'} group-hover:block  `} >
             <ul className='p-2 w-[110px] bg-slate-100 text-gray-500  rounded-lg my-5'>
-              <li className='m-2 cursor-pointer hover:text-black hover:font-bold '>MyProfile</li>
-              <li onClick={()=>navigate('/order')} className='m-2 cursor-pointer hover:text-black hover:font-bold'>Orders</li>
-              <li onClick={()=>logout()} className='m-2 cursor-pointer hover:text-black hover:font-bold'>LogOut</li>
+              <li onClick={() => { navigate('/profile') }} className='m-2 cursor-pointer hover:text-black hover:font-bold '>MyProfile</li>
+              <li onClick={() => navigate('/order')} className='m-2 cursor-pointer hover:text-black hover:font-bold'>Orders</li>
+              <li onClick={() => logout()} className='m-2 cursor-pointer hover:text-black hover:font-bold'>LogOut</li>
             </ul>
           </div>}
         </div>
