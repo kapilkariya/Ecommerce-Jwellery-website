@@ -5,10 +5,12 @@ import { ShopContext } from '../context/ShopContext.jsx';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { use } from 'react';
+import Loading from '../components/Loading.jsx';
 
 const PlaceOrder = () => {
   const [method, setmethod] = useState('cod');
   const [user, setUser] = useState(null);
+  const [loading,setloading]=useState(false);
   const { navigate, backendURL, token, cartitems, setcartitems, getcartamount, delivery_fee, products, clearcart } = useContext(ShopContext);
   const [formdata, setformdata] = useState({
     firstname: '',
@@ -106,6 +108,7 @@ const PlaceOrder = () => {
       return;
     }
     try {
+      setloading(true)
       const resp = await axios.post(backendURL + '/api/user/address', { address: formdata }, { headers: { token } });
       if (resp.data.success) {
         toast.success('address saved')
@@ -115,6 +118,7 @@ const PlaceOrder = () => {
       else {
         toast.error(resp.data.message)
       }
+      setloading(false)
     } catch (error) {
       console.log('done2')
       toast.error(error.message)
@@ -140,10 +144,12 @@ const PlaceOrder = () => {
 
   const remadd = async (index) => {
     try {
+      setloading(true)
       const res = await axios.post(backendURL + '/api/user/del', { index }, { headers: { token } })
       if (res.data.success) {
         toast.success('deleated')
       }
+      setloading(false)
     } catch (error) {
       toast.error(error.message)
     }
@@ -229,7 +235,7 @@ const PlaceOrder = () => {
 
 
 
-  return (
+  return (loading ? <Loading/> :
     <form onSubmit={onsubmithandler} className='w-[90vw] md:w-[80vw] my-10 mx-auto flex flex-col lg:flex-row justify-between gap-8 lg:gap-0'>
       <div className='w-full lg:w-auto'>
         <div className='flex justify-start'>
