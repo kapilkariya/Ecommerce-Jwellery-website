@@ -242,7 +242,9 @@ const Profile = () => {
                   <p className="text-sm text-gray-600 mb-4">
                     Our customer support team is available 24/7 to help you.
                   </p>
-                  <button onClick={() => navigate('contact')} className="px-4 py-2 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition duration-200">
+                  <button onClick={() => {
+                    navigate('contact')
+                  }} className="px-4 py-2 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition duration-200">
                     Contact Support
                   </button>
                 </div>

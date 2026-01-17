@@ -1,8 +1,12 @@
 import React from 'react'
 import Title from '../components/Title.jsx'
 import NewsLetterBox from '../components/NewsLetterBox.jsx'
+import { useEffect } from 'react'
 
 const About = () => {
+  useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },[])
   return (
     <div>
       <div className='my-10 w-[95vw] sm:w-[70vw] md:w-[100vw] m-auto'>

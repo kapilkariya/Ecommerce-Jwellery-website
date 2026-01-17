@@ -1,7 +1,11 @@
 import React from 'react'
 import NewsLetterBox from '../components/NewsLetterBox.jsx'
+import { useEffect } from 'react';
 
 const Contact = () => {
+  useEffect(()=>{
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },[])
   return (
     <div className='m-20 '>
       <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-lg m-20 ">

@@ -267,7 +267,7 @@ const Footer = () => {
 
                   <div className="h-3 w-px bg-gray-700"></div>
 
-                  <a href="https://portfolio.dev"
+                  <a href=""
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-amber-300 transition-colors duration-300">
