@@ -5,7 +5,7 @@ import userModel from '../models/usermodel.js';
 import jwt, { decode } from 'jsonwebtoken';
 
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET);
+    return jwt.sign({ id }, process.env.JWT_SECRET,{ expiresIn: "7d" });
 }
 //route for user login 
 const loginuser = async (req, res) => {
