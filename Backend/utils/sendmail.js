@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 // Send an email using async/await
 const sendmail =async (to,subject,text,html) => {
   const info = await transporter.sendMail({
-    from: 'SparkNest <kapilkariya77@gmail.com>',
+    from: 'UNIFINDS <kapilkariya77@gmail.com>',
     to,
     subject,
     text, // Plain-text version of the message

@@ -218,11 +218,6 @@ const Footer = () => {
                   Contact Us
                 </div>
               </li>
-              <li>
-                <div className="text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer">
-                  Privacy Policy
-                </div>
-              </li>
             </ul>
           </div>
         </div>
@@ -253,7 +248,7 @@ const Footer = () => {
             <div className="pt-4 border-t border-gray-800">
               <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-600">
                 <div className="text-center md:text-left">
-                  Website developed by <span className="text-amber-400/80 font-medium">Kapil Kariya</span>
+                  Website developed by <a href='https://google.com' className="cursor-pointer text-amber-400/80 font-medium">Kapil Kariya</a>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -267,7 +262,7 @@ const Footer = () => {
 
                   <div className="h-3 w-px bg-gray-700"></div>
 
-                  <a href=""
+                  <a href="https://kapilkariya.vercel.app/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-amber-300 transition-colors duration-300">
