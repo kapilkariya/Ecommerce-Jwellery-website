@@ -18,14 +18,50 @@ const ShopContextProvider = (props) => {
     const [token, settoken] = useState('')
     const [category, setcategory] = useState([]);
     const [subCategory, setsubCategory] = useState([]);
-    const [tempcategory,settempcategory]=useState('');
+    const [tempcategory, settempcategory] = useState('');
+
+    // ─── Global axios interceptor: handle session expiry once, everywhere ───
+    useEffect(() => {
+        const interceptorId = axios.interceptors.response.use(
+            (response) => {
+                // If backend returns success:false with a session-expired message at HTTP 200
+                // (older routes), treat it the same way
+                if (
+                    response.data &&
+                    response.data.success === false &&
+                    typeof response.data.message === 'string' &&
+                    response.data.message.toLowerCase().includes('session expired')
+                ) {
+                    handleSessionExpiry();
+                }
+                return response;
+            },
+            (error) => {
+                // HTTP 401 from any API call → session expired
+                if (error.response && error.response.status === 401) {
+                    handleSessionExpiry();
+                }
+                return Promise.reject(error);
+            }
+        );
+        return () => axios.interceptors.response.eject(interceptorId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleSessionExpiry = () => {
+        localStorage.removeItem('token');
+        settoken('');
+        setcartitems({});
+        toast.error('Your session has expired. Please log in again.');
+        navigate('/login');
+    };
 
     const togglecategory = (value) => {
         if (category.includes(value)) {
             setcategory(prev => prev.filter(item => item !== value))
         }
         else {
-            setcategory(prev => [...prev,value])
+            setcategory(prev => [...prev, value])
         }
     }
     const togglesubCategory = (value) => {
@@ -33,7 +69,7 @@ const ShopContextProvider = (props) => {
             setsubCategory(prev => prev.filter(item => item !== value))
         }
         else {
-            setsubCategory(prev => [...prev,value])
+            setsubCategory(prev => [...prev, value])
         }
     }
 
@@ -156,15 +192,13 @@ const ShopContextProvider = (props) => {
             const response = await axios.post(backendURL + '/api/cart/get', {}, { headers: { token } })
             if (response.data.success) {
                 setcartitems(response.data.cartData)
-            }
-            else {
-                console.log(error.message)
-                toast.error(error.message)
+            } else {
+                // No 'error' variable here — just log the message from the response
+                console.log(response.data.message)
             }
         }
         catch (error) {
             console.log(error.message)
-            toast.error(error.message)
         }
     }
 
@@ -198,7 +232,7 @@ const ShopContextProvider = (props) => {
         navigate, navtoplaceorder,
         backendURL,
         token, settoken,
-        category, setcategory, subCategory, setsubCategory,togglecategory,togglesubCategory,tempcategory,settempcategory
+        category, setcategory, subCategory, setsubCategory, togglecategory, togglesubCategory, tempcategory, settempcategory
     }
     return (
         <ShopContext.Provider value={value} >
