@@ -8,6 +8,7 @@ import productrouter from './routes/productroute.js'
 import cartrouter from './routes/cartroute.js'
 import orderRouter from './routes/orderroute.js'
 import authroute from './routes/authroute.js'
+import feedbackRouter from './routes/feedbackroute.js'
 import "./config/passport.js"
 
 // App Config
@@ -35,6 +36,7 @@ app.use('/api/user', userrouter);
 app.use('/api/product', productrouter);
 app.use('/api/cart', cartrouter)
 app.use('/api/order', orderRouter)
+app.use('/api/feedback', feedbackRouter)
 
 
 
@@ -43,5 +45,5 @@ app.get('/', (req, res) => {
 })
 
 
-// app.listen(3000, () => console.log('Server started on PORT : 3000'))
-export default app;  
+app.listen(3000, () => console.log('Server started on PORT : 3000'))
+// export default app;  

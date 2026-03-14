@@ -17,6 +17,12 @@ const ShoppingBagIcon = (props) => (
   </svg>
 );
 
+const MessageSquareIcon = (props) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+  </svg>
+);
+
 const Sidebar = () => {
   const [currentPage, setCurrentPage] = useState('add');
 
@@ -47,6 +53,13 @@ const Sidebar = () => {
         <div onClick={() => setCurrentPage('orders')} className={`${baseClasses} ${currentPage === 'orders' ? "bg-white shadow-md border-r-4 border-orange-500 text-orange-600 font-semibold" : "text-gray-600"}`}>
           <ShoppingBagIcon className="w-5 h-5 min-w-[1.25rem] stroke-current" />
           <span className={textClasses}>Orders</span>
+        </div>
+      </Navlink>
+      {/* Customer Feedback */}
+      <Navlink to='/feedback'>
+        <div onClick={() => setCurrentPage('feedback')} className={`${baseClasses} ${currentPage === 'feedback' ? "bg-white shadow-md border-r-4 border-orange-500 text-orange-600 font-semibold" : "text-gray-600"}`}>
+          <MessageSquareIcon className="w-5 h-5 min-w-[1.25rem] stroke-current" />
+          <span className={textClasses}>Customer Feedback</span>
         </div>
       </Navlink>
     </div>
