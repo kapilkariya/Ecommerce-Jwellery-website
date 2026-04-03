@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { backendURL } from '../App';
 import { toast } from 'react-toastify';
+import { ShopContext } from '../../context/ShopContext';
+import { useContext } from 'react';
 
 const StarDisplay = ({ rating }) => (
   <span className="text-amber-400 text-base tracking-tight">
@@ -12,6 +13,7 @@ const StarDisplay = ({ rating }) => (
 );
 
 const Feedback = ({ token }) => {
+  const { backendURL } = useContext(ShopContext);
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
 

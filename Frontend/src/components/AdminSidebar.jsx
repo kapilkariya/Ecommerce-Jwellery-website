@@ -23,7 +23,7 @@ const MessageSquareIcon = (props) => (
   </svg>
 );
 
-const Sidebar = () => {
+const AdminSidebar = () => {
   const [currentPage, setCurrentPage] = useState('add');
 
   const baseClasses = "flex items-center gap-4 p-3 m-2 cursor-pointer transition-all duration-200 rounded-lg hover:shadow-lg hover:bg-gray-100";
@@ -34,7 +34,7 @@ const Sidebar = () => {
       <h3 className="text-sm font-bold text-gray-800 hidden sm:block p-4 border-b">MENU</h3>
 
       {/* Add Items */}
-      <Navlink to='/add'>
+      <Navlink to='/admin/add'>
         <div onClick={() => setCurrentPage('add')} className={`${baseClasses} ${currentPage === 'add' ? "bg-white shadow-md border-r-4 border-orange-500 text-orange-600 font-semibold" : "text-gray-600"}`}>
           <PlusCircleIcon className="w-5 h-5 min-w-[1.25rem] stroke-current" />
           <span className={textClasses}>Add Items</span>
@@ -42,21 +42,21 @@ const Sidebar = () => {
       </Navlink>
 
       {/* List Items */}
-      <Navlink to='/list'>
+      <Navlink to='/admin/list'>
         <div onClick={() => setCurrentPage('list')} className={`${baseClasses} ${currentPage === 'list' ? "bg-white shadow-md border-r-4 border-orange-500 text-orange-600 font-semibold" : "text-gray-600"}`}>
           <ListChecksIcon className="w-5 h-5 min-w-[1.25rem] stroke-current" />
           <span className={textClasses}>List Items</span>
         </div>
       </Navlink>
       {/* Orders */}
-      <Navlink to='/orders'>
+      <Navlink to='/admin/orders'>
         <div onClick={() => setCurrentPage('orders')} className={`${baseClasses} ${currentPage === 'orders' ? "bg-white shadow-md border-r-4 border-orange-500 text-orange-600 font-semibold" : "text-gray-600"}`}>
           <ShoppingBagIcon className="w-5 h-5 min-w-[1.25rem] stroke-current" />
           <span className={textClasses}>Orders</span>
         </div>
       </Navlink>
       {/* Customer Feedback */}
-      <Navlink to='/feedback'>
+      <Navlink to='/admin/feedback'>
         <div onClick={() => setCurrentPage('feedback')} className={`${baseClasses} ${currentPage === 'feedback' ? "bg-white shadow-md border-r-4 border-orange-500 text-orange-600 font-semibold" : "text-gray-600"}`}>
           <MessageSquareIcon className="w-5 h-5 min-w-[1.25rem] stroke-current" />
           <span className={textClasses}>Customer Feedback</span>
@@ -66,4 +66,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;

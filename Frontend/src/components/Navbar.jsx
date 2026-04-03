@@ -5,7 +5,7 @@ import { ShopContext } from '../context/ShopContext';
 const Navbar = () => {
   const [visible, setvisible] = useState(false);
   const [open, setopen] = useState(false);
-  const { showsearch, setshowsearch, getcartcount, token, settoken, setcartitems } = useContext(ShopContext);
+  const { showsearch, setshowsearch, getcartcount, token, settoken, setcartitems, isAdmin } = useContext(ShopContext);
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef(null);
@@ -133,9 +133,10 @@ const Navbar = () => {
           </div>
           <img onClick={() => token ? setopen(prev => !prev) : navigate('/login')} className='h-6' src="/icons/profileicon.svg" alt="" />
           {token && <div className={` absolute right-0 ${open ? 'block' : 'hidden'} group-hover:block  `} >
-            <ul className='p-2 w-[110px] bg-slate-100 text-gray-500  rounded-lg my-5'>
+            <ul className='p-2 w-[130px] bg-slate-100 text-gray-500  rounded-lg my-5'>
               <li onClick={() => { navigate('/profile') }} className='m-2 cursor-pointer hover:text-black hover:font-bold '>MyProfile</li>
               <li onClick={() => navigate('/order')} className='m-2 cursor-pointer hover:text-black hover:font-bold'>Orders</li>
+              {isAdmin() && <li onClick={() => navigate('/admin/add')} className='m-2 cursor-pointer hover:text-amber-600 hover:font-bold text-amber-500 font-semibold'>Admin Panel</li>}
               <li onClick={() => logout()} className='m-2 cursor-pointer hover:text-black hover:font-bold'>LogOut</li>
             </ul>
           </div>}

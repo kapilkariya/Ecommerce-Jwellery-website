@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 
 const Login = () => {
   const [currentstate, setcurrentstate] = useState('Login')
-  const { token, settoken, navigate, backendURL } = useContext(ShopContext);
+  const { token, settoken, navigate, backendURL, setUserEmail } = useContext(ShopContext);
   const [name, setname] = useState('')
   const [password, setpassword] = useState('')
   const [email, setemail] = useState('')
@@ -17,9 +17,12 @@ const Login = () => {
       const handleauth = async () => {
         const params = new URLSearchParams(window.location.search);
         const accesstoken = params.get("token")
+        const userEmailParam = params.get("email")
         if (accesstoken) {
           localStorage.setItem('token', accesstoken);
+          localStorage.setItem('userEmail', userEmailParam || '');
           settoken(accesstoken);
+          setUserEmail(userEmailParam || '');
           navigate('/')
           window.history.replaceState({}, document.title, "/");
         }
@@ -39,6 +42,8 @@ const Login = () => {
           toast.success("signed in successfully")
           settoken(response.data.token)
           localStorage.setItem('token', response.data.token)
+          localStorage.setItem('userEmail', email)
+          setUserEmail(email)
         }
         else {
           toast.error(response.data.message)
@@ -49,6 +54,8 @@ const Login = () => {
         if (response.data.success) {
           localStorage.setItem('userid', response.data.userid);
           localStorage.setItem('token', response.data.token)
+          localStorage.setItem('userEmail', email)
+          setUserEmail(email)
           toast.success("logged in successfully")
           settoken(response.data.token)
         }

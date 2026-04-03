@@ -10,15 +10,23 @@ const ShopContextProvider = (props) => {
     const currency = '₹';
     const delivery_fee = 10;
     const backendURL = import.meta.env.VITE_BACKEND_URL
+    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
     const [searchTerm, setSearchTerm] = useState('');
     const [showsearch, setshowsearch] = useState(false);
     const [cartitems, setcartitems] = useState({});
     const navigate = useNavigate();
     const [products, setproducts] = useState([]);
     const [token, settoken] = useState('')
+    const [userEmail, setUserEmail] = useState('')
     const [category, setcategory] = useState([]);
     const [subCategory, setsubCategory] = useState([]);
     const [tempcategory, settempcategory] = useState('');
+
+    // Check if current user is admin
+    const isAdmin = () => {
+        console.log('isAdmin check - userEmail:', userEmail, 'adminEmail:', adminEmail, 'match:', userEmail === adminEmail);
+        return userEmail === adminEmail
+    }
 
     // ─── Global axios interceptor: handle session expiry once, everywhere ───
     useEffect(() => {
@@ -220,9 +228,17 @@ const ShopContextProvider = (props) => {
     useEffect(() => {
         if (!token && localStorage.getItem('token')) {
             settoken(localStorage.getItem('token'))
+            const storedEmail = localStorage.getItem('userEmail') || '';
+            console.log('Loading userEmail from localStorage:', storedEmail);
+            setUserEmail(storedEmail)
             getusercart(localStorage.getItem('token'))
         }
     }, [])
+
+    // Log userEmail changes for debugging
+    useEffect(() => {
+        console.log('userEmail changed to:', userEmail);
+    }, [userEmail]);
 
     const value = {
         products, currency, delivery_fee,
@@ -232,6 +248,8 @@ const ShopContextProvider = (props) => {
         navigate, navtoplaceorder,
         backendURL,
         token, settoken,
+        userEmail, setUserEmail,
+        isAdmin,
         category, setcategory, subCategory, setsubCategory, togglecategory, togglesubCategory, tempcategory, settempcategory
     }
     return (

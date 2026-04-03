@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { backendURL, currency } from '../App';
 import { toast } from 'react-toastify';
+import { ShopContext } from '../../context/ShopContext';
+import { useContext } from 'react';
 
 const List = ({ token }) => {
-
- 
+  const { backendURL, currency } = useContext(ShopContext);
   const [list, setlist] = useState([]);
   const [quantity, setquantity] = useState({
     S: 0,
