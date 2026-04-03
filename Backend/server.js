@@ -1,6 +1,9 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
 import connectDB from './config/mongodb.js'
 import connectcloudinary from './config/cloudinary.js'
 import userrouter from './routes/userrouter.js'
@@ -11,39 +14,47 @@ import authroute from './routes/authroute.js'
 import feedbackRouter from './routes/feedbackroute.js'
 import "./config/passport.js"
 
-// App Config
 const app = express()
-connectDB();
-connectcloudinary();
 
-// middlewares
+// Fix for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// DB Connections
+connectDB()
+connectcloudinary()
+
+// Middlewares
 app.use(express.json())
+
 app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:5174',
     'https://ecommerce-jwellery-website-miwq.vercel.app',
-    'https://ecommerce-jwellery-website.vercel.app'
+    'https://unifindhub.com'
   ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'token']
-}));
+  credentials: true
+}))
 
-
+// Routes
 app.use('/auth', authroute)
-app.use('/api/user', userrouter);
-app.use('/api/product', productrouter);
+app.use('/api/user', userrouter)
+app.use('/api/product', productrouter)
 app.use('/api/cart', cartrouter)
 app.use('/api/order', orderRouter)
 app.use('/api/feedback', feedbackRouter)
 
+// Serve frontend build
+app.use(express.static(path.join(__dirname, '../frontend/dist')))
 
-
-app.get('/', (req, res) => {
-  res.send("API Working")
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"))
 })
 
+// PORT (important for hosting)
+const PORT = process.env.PORT || 3000
 
-app.listen(3000, () => console.log('Server started on PORT : 3000'))
-// export default app;  
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
