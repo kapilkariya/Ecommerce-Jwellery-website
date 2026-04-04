@@ -46,10 +46,10 @@ app.use('/api/order', orderRouter)
 app.use('/api/feedback', feedbackRouter)
 
 // Serve frontend build
-app.use(express.static(path.join(__dirname, '../frontend/dist')))
+app.use(express.static(path.join(__dirname, '../Frontend/dist')))
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"))
+  res.sendFile(path.join(__dirname, "../Frontend/dist/index.html"))
 })
 
 // PORT (important for hosting)
