@@ -43,15 +43,11 @@ app.use('/api/order', orderRouter)
 app.use('/api/feedback', feedbackRouter)
 
 // Serve frontend only if build exists
-const distPath = path.resolve(__dirname, '../Frontend/dist')
-
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath))
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"))
-  })
-}
+const distPath = path.join(__dirname, '../Frontend/dist')
+app.use(express.static(distPath))
+app.use((req, res) => {
+  res.sendFile(path.join(distPath, "index.html"))
+})
 
 // Start server
 const PORT = process.env.PORT || 3000
