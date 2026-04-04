@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
 
 import connectDB from './config/mongodb.js'
 import connectcloudinary from './config/cloudinary.js'
@@ -16,13 +17,9 @@ import "./config/passport.js"
 
 const app = express()
 
-// Fix for __dirname in ES modules
+// Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// DB Connections
-connectDB()
-connectcloudinary()
 
 // Middlewares
 app.use(express.json())
@@ -45,16 +42,24 @@ app.use('/api/cart', cartrouter)
 app.use('/api/order', orderRouter)
 app.use('/api/feedback', feedbackRouter)
 
-// Serve frontend build
-app.use(express.static(path.join(__dirname, '../Frontend/dist')))
+// Serve frontend only if build exists
+const distPath = path.join(__dirname, '../Frontend/dist')
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../Frontend/dist/index.html"))
-})
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath))
 
-// PORT (important for hosting)
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(distPath, "index.html"))
+  })
+}
+
+// Start server
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
+
+  // connect services AFTER server starts
+  connectDB().catch(err => console.error("MongoDB error:", err))
+  connectcloudinary()
 })
