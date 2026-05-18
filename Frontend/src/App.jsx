@@ -24,6 +24,9 @@ import AdminOrders from './pages/admin/Orders';
 import AdminFeedback from './pages/admin/Feedback';
 import AdminSidebar from './components/AdminSidebar';
 import AdminNavbar from './components/AdminNavbar';
+import Cancellation from './pages/Cancellation';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
 // Main Layout for regular pages
 const MainLayout = () => {
@@ -88,6 +91,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/order" element={<Order />} />
           <Route path="/placeorder" element={<PlaceOrder />} />
+          <Route path="/cancellation" element={<Cancellation/>} />
+          <Route path="/privacy" element={<Privacy/>} />
+          <Route path="/shipping" element={<Privacy/>} />
+          <Route path="/terms" element={<Terms/>} />
         </Route>
       </Routes>
     </div>

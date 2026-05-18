@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
+import { Link } from 'react-router-dom';
+
 
 const SocialIcon = ({ path }) => (
   <svg className="w-5 h-5 transition duration-200 hover:text-amber-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -9,7 +11,7 @@ const SocialIcon = ({ path }) => (
 );
 
 const Footer = () => {
-  const {navigate,setcategory,category,setsubCategory,subCategory,togglecategory,togglesubCategory,settempcategory,tempcategory} =useContext(ShopContext);
+  const { navigate, setcategory, category, setsubCategory, subCategory, togglecategory, togglesubCategory, settempcategory, tempcategory } = useContext(ShopContext);
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -69,7 +71,7 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-6 pb-2 border-b border-amber-500/20">Shop</h4>
             <ul className="space-y-3">
               <li>
-                <button 
+                <button
                   onClick={() => {
                     settempcategory('')
                     navigate('/collection')
@@ -77,7 +79,7 @@ const Footer = () => {
                     setsubCategory([])
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  
+
                   className="w-full text-left text-sm text-gray-400 hover:text-amber-300 hover:pl-2 transition-all duration-300 cursor-pointer bg-transparent border-none p-0 hover:bg-transparent"
                 >
                   All Collections
@@ -85,7 +87,7 @@ const Footer = () => {
               </li>
               <li>
                 <button value={'Rings'}
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Rings')
                     setcategory([])
                     setsubCategory([])
@@ -100,7 +102,7 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Necklace')
                     setcategory([])
                     setsubCategory([])
@@ -115,7 +117,7 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Bracelet')
                     setcategory([])
                     setsubCategory([])
@@ -130,7 +132,7 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Mangalsutra')
                     setcategory([])
                     setsubCategory([])
@@ -152,7 +154,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <button
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Americand')
                     setcategory([])
                     setsubCategory([])
@@ -167,7 +169,7 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Antitarnish')
                     setcategory([])
                     setsubCategory([])
@@ -182,7 +184,7 @@ const Footer = () => {
               </li>
               <li>
                 <button
-                  onClick={() =>{
+                  onClick={() => {
                     settempcategory('Rajwadi')
                     setcategory([])
                     setsubCategory([])
@@ -233,14 +235,35 @@ const Footer = () => {
                 &copy; {new Date().getFullYear()} <span className="text-amber-300">Unifinds Jewellery</span>. All rights reserved.
               </div>
 
+
               <div className="flex items-center gap-6 text-sm text-gray-500">
-                <div className="hover:text-amber-300 transition-colors duration-300 cursor-pointer">
+                <Link
+                  to="/terms"
+                  className="hover:text-amber-300 transition-colors duration-300 cursor-pointer"
+                >
                   Terms of Service
-                </div>
+                </Link>
                 <div className="h-4 w-px bg-gray-700"></div>
-                <div className="hover:text-amber-300 transition-colors duration-300 cursor-pointer">
+                <Link
+                  to="/privacy"
+                  className="hover:text-amber-300 transition-colors duration-300 cursor-pointer"
+                >
                   Privacy Policy
-                </div>
+                </Link>
+                <div className="h-4 w-px bg-gray-700"></div>
+                <Link
+                  to="/shipping"
+                  className="hover:text-amber-300 transition-colors duration-300 cursor-pointer"
+                >
+                  Shipping Policy
+                </Link>
+                <div className="h-4 w-px bg-gray-700"></div>
+                <Link
+                  to="/cancellation"
+                  className="hover:text-amber-300 transition-colors duration-300 cursor-pointer"
+                >
+                  Cancellation policy
+                </Link>
               </div>
             </div>
 
