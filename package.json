@@ -1,0 +1,9 @@
+{
+  "name": "ecomm-app",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node scripts/build-frontend.cjs",
+    "start": "node scripts/start-backend.cjs"
+  }
+}

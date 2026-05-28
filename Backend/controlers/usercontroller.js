@@ -2,7 +2,7 @@
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import userModel from '../models/usermodel.js';
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET,{ expiresIn: "7d" });
@@ -11,25 +11,30 @@ const createToken = (id) => {
 const loginuser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+      return res.json({ success: false, message: "email and password are required" })
+    }
 
     const user= await userModel.findOne({email});
     if(!user){
-      return res.json({ success: "false", message: "user doesnot exists" })
+      return res.json({ success: false, message: "user does not exist" })
+    }
+    if (!user.password) {
+      return res.json({ success: false, message: "Please continue with Google for this account" })
     }
     const ismatch = await bcrypt.compare(password,user.password);
     if(ismatch){
       const token= createToken(user._id)
-      res.json({success:true, token})
-      localStorage.setItem('userid', user._id);
+      return res.json({success:true, token, userid: user._id, email: user.email})
     }
     else{
-      return res.json({ success: "false", message: "invalid credentials" })
+      return res.json({ success: false, message: "invalid credentials" })
     }
  
   }
   catch (error) {
     console.log(error)
-    res.json({ success: "false", message: error.message })
+    res.json({ success: false, message: error.message })
   }
 }
 
@@ -41,13 +46,13 @@ const registeruser = async (req, res) => {
     //checking if user exists
     const exists = await userModel.findOne({email});
     if (exists) {
-      return res.json({ success: "false", message: "user already exists" })
+      return res.json({ success: false, message: "user already exists" })
     }
     if (!validator.isEmail(email)) {
-      return res.json({ success: "false", message: "please enter valid email" })
+      return res.json({ success: false, message: "please enter valid email" })
     }
     if (password.length < 2) {
-      return res.json({ success: "false", message: "please enter strong password" })
+      return res.json({ success: false, message: "please enter strong password" })
     }
 
     //hashing user password
@@ -62,7 +67,7 @@ const registeruser = async (req, res) => {
 
     const user= await newuser.save();
     const token =createToken(user._id)
-    res.json({success:true,token})
+    res.json({success:true,token, userid: user._id, email: user.email})
   }
   catch (error) { 
     console.log(error)

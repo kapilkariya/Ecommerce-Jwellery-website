@@ -38,12 +38,13 @@ const Login = () => {
     try {
       if (currentstate === 'Sign up') {
         const response = await axios.post(backendURL + '/api/user/register', { name, email, password })
-        if (response.data.success) {
-          toast.success("signed in successfully")
+        if (response.data.success === true) {
+          toast.success("Account created successfully")
           settoken(response.data.token)
           localStorage.setItem('token', response.data.token)
-          localStorage.setItem('userEmail', email)
-          setUserEmail(email)
+          localStorage.setItem('userid', response.data.userid || '');
+          localStorage.setItem('userEmail', response.data.email || email)
+          setUserEmail(response.data.email || email)
         }
         else {
           toast.error(response.data.message)
@@ -51,11 +52,11 @@ const Login = () => {
       }
       else {
         const response = await axios.post(backendURL + '/api/user/login', { email, password })
-        if (response.data.success) {
-          localStorage.setItem('userid', response.data.userid);
+        if (response.data.success === true) {
+          localStorage.setItem('userid', response.data.userid || '');
           localStorage.setItem('token', response.data.token)
-          localStorage.setItem('userEmail', email)
-          setUserEmail(email)
+          localStorage.setItem('userEmail', response.data.email || email)
+          setUserEmail(response.data.email || email)
           toast.success("logged in successfully")
           settoken(response.data.token)
         }
@@ -88,7 +89,7 @@ const Login = () => {
           {currentstate === 'Login' ? <p onClick={() => setcurrentstate('Sign up')} className="cursor-pointer">Create account</p> : <p onClick={() => setcurrentstate('Login')} className="cursor-pointer">Login Here</p>}
         </div>
         <button type="submit" className="bg-black text-white py-2 px-8 m-4 w-full active:bg-gray-700">{currentstate === 'Login' ? 'Sign In' : 'Sign Up'}</button>
-        <button onClick={()=>window.open(`${import.meta.env.VITE_BACKEND_URL}/auth/google`,"_self")} type="button" className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-sm hover:bg-gray-50 transition duration-150">
+        <button onClick={()=>window.open(`${backendURL}/auth/google`,"_self")} type="button" className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-sm hover:bg-gray-50 transition duration-150">
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
