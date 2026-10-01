@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-frontend.cjs",
-    "start": "node scripts/start-backend.cjs"
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
   },
   "dependencies": {
     "@google/genai": "^1.35.0",
@@ -27,5 +28,8 @@
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.9.12"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
