@@ -16,7 +16,7 @@ const Product = () => {
     products.map((item) => {
       if (item._id === productid) {
         setproductdata(item)
-        setimage(item.images[0])
+        setimage(item.images?.[0] || '/uploadarea.png')
         return null;
       }
     })
@@ -35,13 +35,13 @@ const Product = () => {
         <div className='flex flex-col-reverse md:flex-row sm:w-1/2 gap-6 justify-center ' >
           <div className='flex md:flex-col gap-[10px] md:h-[75vh] overflow-auto '>
             {
-              productdata.images.map((item, index) => {
+              (productdata.images || []).map((item, index) => {
                 return <img onClick={() => setimage(item)} className='h-30 sm:h-40 md:h-[24vh]' src={item} key={index} alt="" />
               })
             }
           </div>
           <div className=' sm:h-[75vh] mb-10 md:mb-20'>
-            <img className='h-full w-full object-contain' src={images} alt="" />
+            <img className='h-full w-full object-contain' src={images || '/uploadarea.png'} onError={(event) => { event.currentTarget.src = '/uploadarea.png' }} alt={productdata.name} />
           </div>
         </div>
 

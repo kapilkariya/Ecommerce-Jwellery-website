@@ -1,31 +1,28 @@
 import nodemailer from 'nodemailer';
 
-// Create a transporter using Ethereal test credentials.
-// For production, replace with your actual SMTP server details.
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // Use true for port 465, false for port 587
-  auth: {
-    user: "kapilkariya77@gmail.com",
-    pass: "vjafrhufbfvucfqd",
-  },
-});
+const sendmail = async (to, subject, text, html) => {
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_APP_PASSWORD?.replace(/\s/g, '');
+  if (!user || !pass) {
+    throw new Error('Email notifications are not configured. Set SMTP_USER and SMTP_APP_PASSWORD.');
+  }
 
-
-
-// Send an email using async/await
-const sendmail =async (to,subject,text,html) => {
-  const info = await transporter.sendMail({
-    from: 'UNIFINDS <kapilkariya77@gmail.com>',
-    to,
-    subject,
-    text, // Plain-text version of the message
-    html, // HTML version of the message
-    
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: { user, pass },
   });
 
-  console.log("Message sent:", info.messageId);
+  const info = await transporter.sendMail({
+    from: process.env.SMTP_FROM || `UNIFINDS <${user}>`,
+    to,
+    subject,
+    text,
+    html,
+  });
+
+  console.log('Order notification email sent:', info.messageId);
 };
 
-export default sendmail
+export default sendmail;

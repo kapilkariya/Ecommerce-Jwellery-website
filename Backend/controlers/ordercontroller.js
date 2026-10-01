@@ -2,17 +2,27 @@ import orderModel from "../models/ordermodel.js";
 import userModel from "../models/usermodel.js";
 import jwt from "jsonwebtoken";
 import razorpay from 'razorpay';
-import sendmail from "../utils/sendmail.js";
 import send from "../utils/send.js";
 import productmodel from "../models/productmodel.js";
+import { createHmac, timingSafeEqual } from 'node:crypto';
 
-const currency = 'inr'
-const deliverycharge = 10
+const getRazorpayInstance = () => {
+  if (!process.env.RAZORPAY_ID || !process.env.RAZORPAY_SECRET) {
+    throw new Error('Razorpay is not configured on the server. Set RAZORPAY_ID and RAZORPAY_SECRET.')
+  }
+  return new razorpay({
+    key_id: process.env.RAZORPAY_ID,
+    key_secret: process.env.RAZORPAY_SECRET
+  })
+}
 
-const razorpayinstance = new razorpay({
-  key_id: process.env.RAZORPAY_ID,
-  key_secret: process.env.RAZORPAY_SECRET
-})
+const notifyOrderEmails = (email, amount, address) => {
+  for (const recipient of ['client', 'admin']) {
+    void send(recipient, email, amount, address).catch((error) => {
+      console.error(`Order ${recipient} email failed:`, error.message);
+    });
+  }
+}
 
 // Place order (COD)
 const placeorder = async (req, res) => {
@@ -23,14 +33,9 @@ const placeorder = async (req, res) => {
     // Decode token to get userId
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userid = decoded.id;
-    const usr = await userModel.findById(userid).select('email')
-    const mail = usr.email;
-
+    const usr = await userModel.findById(userid).select('email');
+    const mail = usr?.email;
     const { items, amount, address } = req.body;
-
-    send('client', mail, amount, address);
-    send('admin', mail, amount, address);
-
 
     const orderdata = {
       userid,       // from token
@@ -45,8 +50,8 @@ const placeorder = async (req, res) => {
 
     const neworder = new orderModel(orderdata);
     await neworder.save();
-    // sendmail()
-    await userModel.findByIdAndUpdate(userid, { cartdata: {} });
+    await userModel.findByIdAndUpdate(userid, { cartData: {} });
+    notifyOrderEmails(mail, amount, address);
 
     res.json({ success: true, message: "Order placed successfully" });
   } catch (error) {
@@ -61,18 +66,13 @@ const placeorder = async (req, res) => {
 //placing order using razorpay method
 const placeorderrazorpay = async (req, res) => {
   try {
+    const razorpayinstance = getRazorpayInstance()
     const token = req.headers.token;
     if (!token) return res.status(401).json({ success: false });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userid = decoded.id;
-    const usr = await userModel.findById(userid).select('email')
-    const mail = usr.email;
-
     const { items, amount, address } = req.body;
-
-    send('client', mail, amount, address);
-    send('admin', mail, amount, address);
 
     // SAVE FIRST
     const newOrder = await orderModel.create({
@@ -86,54 +86,78 @@ const placeorderrazorpay = async (req, res) => {
     });
 
     // CREATE RAZORPAY ORDER
-    const razorpayOrder = await razorpayinstance.orders.create({
-      amount: Number(amount) * 100,
-      currency: "INR",
-      receipt: newOrder._id.toString(), // link exact order
-    });
+    let razorpayOrder;
+    try {
+      razorpayOrder = await razorpayinstance.orders.create({
+        amount: Math.round(Number(amount) * 100),
+        currency: "INR",
+        receipt: newOrder._id.toString(),
+      });
+      await orderModel.findByIdAndUpdate(newOrder._id, { razorpayOrderId: razorpayOrder.id });
+    } catch (error) {
+      await orderModel.findByIdAndDelete(newOrder._id);
+      throw error;
+    }
 
-    res.json({ success: true, order: razorpayOrder });
+    res.json({ success: true, order: razorpayOrder, keyId: process.env.RAZORPAY_ID });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: error.message });
+    const missingConfig = error.message.includes('not configured on the server');
+    res.status(missingConfig ? 503 : 500).json({ success: false, message: error.message });
   }
 };
 
 const varifyrazorpay = async (req, res) => {
   try {
+    const razorpayinstance = getRazorpayInstance()
     const token = req.headers.token;
     if (!token) return res.status(401).json({ success: false });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userid = decoded.id;
 
-    const { razorpay_order_id, razorpay_payment_id } = req.body;
-
-    const orderinfo = await razorpayinstance.orders.fetch(razorpay_order_id);
-
-    // PAYMENT SUCCESS
-    if (razorpay_payment_id) {
-      await orderModel.findByIdAndUpdate(orderinfo.receipt, {
-        payment: true,
-        status: "Order Placed"
-      });
-      const usr = await userModel.findById(userid).select('email');
-      const mail = usr.email;
-
-      const order = await orderModel.findById(orderinfo.receipt);
-
-      send('client', mail, order.amount, order.address);
-      send('admin', mail, order.amount, order.address);
-
-      await userModel.findByIdAndUpdate(userid, { cartdata:{}});
-
-      return res.json({ success: true, message: "Payment successful" });
+    const { razorpay_order_id: razorpayOrderId, razorpay_payment_id: paymentId, razorpay_signature: signature } = req.body;
+    if (!razorpayOrderId) {
+      return res.status(400).json({ success: false, message: 'Razorpay order ID is required.' });
     }
 
-    // PAYMENT CANCELLED - DELETE ORDER
-    await orderModel.findByIdAndDelete(orderinfo.receipt);
+    const order = await orderModel.findOne({ userid, razorpayOrderId });
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Payment order was not found for this account.' });
+    }
 
-    return res.json({ success: false, message: "Payment cancelled" });
+    if (!paymentId) {
+      if (!order.payment) await orderModel.findByIdAndDelete(order._id);
+      return res.json({ success: false, message: 'Payment cancelled' });
+    }
+
+    if (!signature || !/^[a-f0-9]{64}$/i.test(signature)) {
+      return res.status(400).json({ success: false, message: 'Razorpay payment signature is missing or invalid.' });
+    }
+    const expectedSignature = createHmac('sha256', process.env.RAZORPAY_SECRET)
+      .update(`${order.razorpayOrderId}|${paymentId}`)
+      .digest();
+    const receivedSignature = Buffer.from(signature, 'hex');
+    if (receivedSignature.length !== expectedSignature.length || !timingSafeEqual(receivedSignature, expectedSignature)) {
+      return res.status(400).json({ success: false, message: 'Payment signature verification failed.' });
+    }
+
+    const paymentInfo = await razorpayinstance.payments.fetch(paymentId);
+    if (paymentInfo.order_id !== order.razorpayOrderId || paymentInfo.amount !== Math.round(order.amount * 100) || paymentInfo.currency !== 'INR') {
+      return res.status(400).json({ success: false, message: 'Payment details do not match this order.' });
+    }
+    if (paymentInfo.status !== 'captured') {
+      return res.status(409).json({ success: false, message: 'Payment is not captured yet. Check Razorpay automatic capture settings.' });
+    }
+
+    order.payment = true;
+    order.status = 'Order Placed';
+    await order.save();
+    const usr = await userModel.findById(userid).select('email');
+    await userModel.findByIdAndUpdate(userid, { cartData: {} });
+    if (usr?.email) notifyOrderEmails(usr.email, order.amount, order.address);
+
+    return res.json({ success: true, message: 'Payment successful' });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });

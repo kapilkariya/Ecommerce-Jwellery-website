@@ -7,6 +7,7 @@ const orderschema = new mongoose.Schema({
   address: { type: Object, required: true },
   status: { type: String, required: true, default:'Order Placed' },
   paymentmethod: { type: String, required: true },
+  razorpayOrderId: { type: String },
   payment: { type: Boolean, required: true, default: false },
   date: {type:Number ,required:true}
 }) 

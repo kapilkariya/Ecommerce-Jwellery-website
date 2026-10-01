@@ -86,14 +86,17 @@ const ShopContextProvider = (props) => {
             const response = await axios.get(backendURL + '/api/product/list')
             if (response.data.success) {
                 setproducts(response.data.products)
+                return response.data.products
             }
             else {
                 toast.error(response.data.message)
+                return []
             }
         }
         catch (error) {
             console.log(error.message)
             toast.error(error.message)
+            return []
         }
     }
 
@@ -241,7 +244,7 @@ const ShopContextProvider = (props) => {
     }, [userEmail]);
 
     const value = {
-        products, currency, delivery_fee,
+        products, getproductdata, currency, delivery_fee,
         searchTerm, setSearchTerm, showsearch, setshowsearch,
         cartitems, setcartitems, addtocart, clearcart,
         getcartcount, updatequantity, getcartamount,

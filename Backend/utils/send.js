@@ -1,88 +1,24 @@
-import sendmail from "./sendmail.js"
+import sendmail from './sendmail.js';
 
-const send = (person, mail, amount, address) => {
+const send = async (person, mail, amount, address) => {
   if (person === 'client') {
-    sendmail(
+    return sendmail(
       mail,
       'Thanks for your order 🛒',
-      `
-      Thank you for your order!
-      
-      Order Details:
-      - Total Amount: ₹${amount}
-      
-      Delivery Address:
-      ${address.firstname} ${address.lastname}
-      ${address.street}
-      ${address.city}, ${address.state} - ${address.zipcode}
-      Phone: ${address.phone}
-      
-      We will deliver your order soon.
-      
-      Thank you for shopping with us!
-      `,
-          `
-      <h2>Thank you for your order 🛒</h2>
-      
-      <p><strong>Total Amount:</strong> ₹${amount}</p>
-      
-      <h3>Delivery Address</h3>
-      <p>
-      ${address.firstname} ${address.lastname}<br/>
-      ${address.street}<br/>
-      ${address.city}, ${address.state} - ${address.zipcode}<br/>
-      <strong>Phone:</strong> ${address.phone}
-      </p>
-      
-      <p>We will deliver your order soon.</p>
-      
-      <p><strong>Thank you for shopping with us!</strong></p>
-      `
+      `Thank you for your order!\n\nOrder total: ₹${amount}\n\nDelivery address:\n${address.firstname} ${address.lastname}\n${address.street}\n${address.city}, ${address.state} - ${address.zipcode}\nPhone: ${address.phone}\n\nWe will deliver your order soon.`,
+      `<h2>Thank you for your order 🛒</h2><p><strong>Order total:</strong> ₹${amount}</p><h3>Delivery address</h3><p>${address.firstname} ${address.lastname}<br/>${address.street}<br/>${address.city}, ${address.state} - ${address.zipcode}<br/><strong>Phone:</strong> ${address.phone}</p><p>We will deliver your order soon.</p>`
     );
   }
-  else {
-    sendmail(
-      process.env.ADMIN_EMAIL2, // admin email
-      "🛒 New Order Received",
-      `
-      NEW ORDER RECEIVED
 
-      Customer Details:
-      Name: ${address.firstname} ${address.lastname}
-      Phone: ${address.phone}
+  const adminEmail = process.env.ADMIN_EMAIL2?.trim();
+  if (!adminEmail) throw new Error('Admin order notifications are not configured. Set ADMIN_EMAIL2.');
 
-      Order Summary:
-      Total Amount: ₹${amount}
-
-      Delivery Address:
-      ${address.street}
-      ${address.city}, ${address.state} - ${address.zipcode}
-
-      Please process this order.
-      `,
-            `
-      <h2>🛒 New Order Received</h2>
-
-      <h3>Customer Details</h3>
-      <p>
-      <strong>Name:</strong> ${address.firstname} ${address.lastname}<br/>
-      <strong>Phone:</strong> ${address.phone}
-      </p>
-
-      <h3>Order Summary</h3>
-      <p><strong>Total Amount:</strong> ₹${amount}</p>
-
-      <h3>Delivery Address</h3>
-      <p>
-      ${address.street}<br/>
-      ${address.city}, ${address.state} - ${address.zipcode}
-      </p>
-
-      <p><strong>Please process this order.</strong></p>
-      `
-    );
-
-  }
-}
+  return sendmail(
+    adminEmail,
+    '🛒 New Order Received',
+    `New order received.\n\nCustomer: ${address.firstname} ${address.lastname}\nPhone: ${address.phone}\nTotal: ₹${amount}\n\nDelivery address:\n${address.street}\n${address.city}, ${address.state} - ${address.zipcode}`,
+    `<h2>🛒 New Order Received</h2><p><strong>Customer:</strong> ${address.firstname} ${address.lastname}<br/><strong>Phone:</strong> ${address.phone}</p><p><strong>Order total:</strong> ₹${amount}</p><p><strong>Delivery address:</strong><br/>${address.street}<br/>${address.city}, ${address.state} - ${address.zipcode}</p>`
+  );
+};
 
 export default send;

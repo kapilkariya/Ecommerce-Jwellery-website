@@ -56,9 +56,13 @@ const PlaceOrder = () => {
   }, [token]);
 
 
-  const initpay = (order) => {
+  const initpay = (order, keyId) => {
+    if (!keyId || !window.Razorpay) {
+      toast.error(!keyId ? 'Razorpay is not configured. Please contact the store.' : 'Payment checkout could not load. Please refresh and try again.');
+      return;
+    }
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_ID,
+      key: keyId,
       amount: order.amount,
       currency: order.currency,
       name: 'Order Payment',
@@ -203,20 +207,21 @@ const PlaceOrder = () => {
             else {
               a = false
               console.log(response.data.message)
-              toast.error(response.data.message)
+              toast.error(response.data.message || 'Unable to place the order.')
             }
             break;
 
           case 'razorpay':
             const responserazorpay = await axios.post(backendURL + '/api/order/razorpay', orderdata, { headers: { token } })
             if (responserazorpay.data.success) {
-              initpay(responserazorpay.data.order)
+              initpay(responserazorpay.data.order, responserazorpay.data.keyId)
             }
             else {
               a = false
-              console.log(response.data.message)
-              toast.error(response.data.message)
+              console.log(responserazorpay.data.message)
+              toast.error(responserazorpay.data.message || 'Unable to create a Razorpay order.')
             }
+            break;
 
           default:
             break;
@@ -230,6 +235,7 @@ const PlaceOrder = () => {
     }
     catch (error) {
       console.log(error)
+      toast.error(error.response?.data?.message || 'Unable to start checkout. Please try again.')
     }
   }
 

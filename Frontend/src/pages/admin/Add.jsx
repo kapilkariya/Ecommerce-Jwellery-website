@@ -5,7 +5,7 @@ import { ShopContext } from '../../context/ShopContext';
 import { useContext } from 'react';
 
 const Add = ({ token }) => {
-  const { backendURL } = useContext(ShopContext);
+  const { backendURL, getproductdata } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
 
   const [image1, setimage1] = useState(false);
@@ -27,6 +27,14 @@ const Add = ({ token }) => {
     XL: 0,
   });
 
+  const checkImageDelivery = (url) => new Promise((resolve) => {
+    const image = new Image();
+    const timeout = setTimeout(() => resolve(false), 10000);
+    image.onload = () => { clearTimeout(timeout); resolve(true); };
+    image.onerror = () => { clearTimeout(timeout); resolve(false); };
+    image.src = url;
+  });
+
   const generatecontent = async () => {
     if (!name && !description) return toast.error('Please enter title or description');
     try {
@@ -46,7 +54,18 @@ const Add = ({ token }) => {
 
   const onsubmithandler = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !description.trim()) return;
+    if (!name.trim() || !description.trim()) {
+      toast.error('Enter a product name and description.');
+      return;
+    }
+    if (!price || Number(price) <= 0) {
+      toast.error('Enter a price greater than zero.');
+      return;
+    }
+    if (![image1, image2, image3, image4].some(Boolean)) {
+      toast.error('Upload at least one product image.');
+      return;
+    }
     setLoading(true);
 
     try {
@@ -68,7 +87,22 @@ const Add = ({ token }) => {
 
       const response = await axios.post(backendURL + "/api/product/add", formdata, { headers: { token } });
       if (response.data.success) {
-        toast.success(response.data.message);
+        const imageUrls = response.data.imageUrls || [];
+        const [fetchedProducts, deliveredImages] = await Promise.all([
+          getproductdata(),
+          Promise.all(imageUrls.map(checkImageDelivery)),
+        ]);
+        const savedProduct = fetchedProducts.find((item) => String(item._id) === String(response.data.productId));
+        const fetchedFromDatabase = savedProduct && imageUrls.every((url) => savedProduct.images?.includes(url));
+        const allImagesLoad = deliveredImages.length > 0 && deliveredImages.every(Boolean);
+        if (fetchedFromDatabase && allImagesLoad) {
+          toast.success(`${response.data.message} Cloudinary upload, database fetch, and image loading verified.`);
+        } else {
+          toast.error(fetchedFromDatabase
+            ? 'Product saved, but one or more Cloudinary images could not be loaded.'
+            : 'Images uploaded, but the saved product could not be fetched from the product API.');
+        }
+        console.info('Product image check:', { productId: response.data.productId, fetchedFromDatabase, deliveredImages, imageUrls });
         setimage1(false);
         setimage2(false);
         setimage3(false);
@@ -84,8 +118,9 @@ const Add = ({ token }) => {
         console.log(response.data.message);
       }
     } catch (error) {
-      console.log(error.message);
-      toast.error(error.message);
+      const message = error.response?.data?.message || error.message;
+      console.error('Product creation failed:', message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

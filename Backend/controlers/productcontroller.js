@@ -6,12 +6,22 @@ const addproduct = async (req, res) => {
   try {
     const { name, description, price, category, subCategory, sizes,quant, bestseller } = req.body
 
-    const image1 = req.files.image1 && req.files.image1[0]
-    const image2 = req.files.image2 && req.files.image2[0]
-    const image3 = req.files.image3 && req.files.image3[0]
-    const image4 = req.files.image4 && req.files.image4[0]
+    const image1 = req.files?.image1?.[0]
+    const image2 = req.files?.image2?.[0]
+    const image3 = req.files?.image3?.[0]
+    const image4 = req.files?.image4?.[0]
 
-    const images = [image1, image2, image3, image4].filter((item) => { return item !== undefined })
+    const images = [image1, image2, image3, image4].filter(Boolean)
+    if (!name?.trim() || !description?.trim() || !category || !subCategory || !price || Number(price) <= 0) {
+      return res.status(400).json({ success: false, message: 'Enter a product name, description, category, subcategory, and valid price.' })
+    }
+    if (images.length === 0) {
+      return res.status(400).json({ success: false, message: 'Upload at least one product image.' })
+    }
+    const cloudinaryConfig = cloudinary.config()
+    if (!cloudinaryConfig.cloud_name || !cloudinaryConfig.api_key || !cloudinaryConfig.api_secret) {
+      return res.status(503).json({ success: false, message: 'Image storage is not configured. Check the backend Cloudinary environment variables.' })
+    }
 
 
     console.log(name, description, price, category, subCategory, sizes,quant, bestseller)
@@ -19,6 +29,7 @@ const addproduct = async (req, res) => {
     let imagesUrl = await Promise.all(
       images.map(async (item) => {
         let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+        if (!result.secure_url) throw new Error('Cloudinary did not return a secure image URL.')
         return result.secure_url
       }))
 
@@ -29,17 +40,17 @@ const addproduct = async (req, res) => {
     const product = new productModel(productdata);
     await product.save()
 
-    res.json({ success: true, message: "Product added successfully" })
+    res.json({ success: true, message: "Product added successfully", productId: product._id, imageUrls: product.images })
 
   } catch (error) {
     console.log(error)
-    res.json({ success: false, message: error.message })
+    res.status(500).json({ success: false, message: error.message })
   }
 }
 // function to list products
 const listproduct = async (req, res) => {
   try {
-    const products = await productModel.find({});
+    const products = await productModel.find({}).sort({ date: -1, _id: -1 });
     res.json({ success: true, products })
   }
   catch (error) {
@@ -101,4 +112,4 @@ export const generateContent = async (req, res) => {
   }
 }
 
-export { singleproductinfo, addproduct, removeproduct,updatequantity, listproduct }  
+export { singleproductinfo, addproduct, removeproduct, updatequantity, listproduct }
