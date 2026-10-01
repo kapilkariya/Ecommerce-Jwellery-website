@@ -9,7 +9,7 @@ import axios from 'axios'
 const ShopContextProvider = (props) => {
     const currency = '₹';
     const delivery_fee = 10;
-    const backendURL = import.meta.env.VITE_BACKEND_URL
+    const backendURL = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '')
     const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
     const [searchTerm, setSearchTerm] = useState('');
     const [showsearch, setshowsearch] = useState(false);

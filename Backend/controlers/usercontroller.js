@@ -7,20 +7,24 @@ import jwt from 'jsonwebtoken';
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET,{ expiresIn: "7d" });
 }
+const findUserByEmail = (email) => userModel.findOne({
+  email: { $regex: `^${email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' }
+});
 //route for user login 
 const loginuser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password : '';
     if (!email || !password) {
-      return res.json({ success: false, message: "email and password are required" })
+      return res.status(400).json({ success: false, message: "Email and password are required." })
     }
 
-    const user= await userModel.findOne({email});
+    const user= await findUserByEmail(email);
     if(!user){
-      return res.json({ success: false, message: "user does not exist" })
+      return res.status(401).json({ success: false, message: "Invalid email or password." })
     }
     if (!user.password) {
-      return res.json({ success: false, message: "Please continue with Google for this account" })
+      return res.status(400).json({ success: false, message: "This account uses Google sign-in. Please continue with Google." })
     }
     const ismatch = await bcrypt.compare(password,user.password);
     if(ismatch){
@@ -28,7 +32,7 @@ const loginuser = async (req, res) => {
       return res.json({success:true, token, userid: user._id, email: user.email})
     }
     else{
-      return res.json({ success: false, message: "invalid credentials" })
+      return res.status(401).json({ success: false, message: "Invalid email or password." })
     }
  
   }
@@ -41,18 +45,22 @@ const loginuser = async (req, res) => {
 //route for user register
 const registeruser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    console.log(req.body)
-    //checking if user exists
-    const exists = await userModel.findOne({email});
-    if (exists) {
-      return res.json({ success: false, message: "user already exists" })
+    const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password : '';
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: "Name, email, and password are required." });
     }
     if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: "please enter valid email" })
+      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
     }
-    if (password.length < 2) {
-      return res.json({ success: false, message: "please enter strong password" })
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
+    }
+    //checking if user exists
+    const exists = await findUserByEmail(email);
+    if (exists) {
+      return res.status(409).json({ success: false, message: "An account with this email already exists. Please log in." })
     }
 
     //hashing user password
@@ -67,10 +75,13 @@ const registeruser = async (req, res) => {
 
     const user= await newuser.save();
     const token =createToken(user._id)
-    res.json({success:true,token, userid: user._id, email: user.email})
+    res.status(201).json({success:true,token, userid: user._id, email: user.email})
   }
   catch (error) { 
     console.log(error)
+    if (error?.code === 11000) {
+      return res.status(409).json({ success: false, message: "An account with this email already exists. Please log in." });
+    }
     res.status(500).json({ success: false, message: "Server error" })
   }
 }

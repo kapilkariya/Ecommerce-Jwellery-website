@@ -9,6 +9,7 @@ const Login = () => {
   const [name, setname] = useState('')
   const [password, setpassword] = useState('')
   const [email, setemail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
 
   
@@ -18,6 +19,10 @@ const Login = () => {
         const params = new URLSearchParams(window.location.search);
         const accesstoken = params.get("token")
         const userEmailParam = params.get("email")
+        if (params.get('error') === 'google_failed') {
+          toast.error('Google sign-in failed. Please try again.')
+          window.history.replaceState({}, document.title, '/login')
+        }
         if (accesstoken) {
           localStorage.setItem('token', accesstoken);
           localStorage.setItem('userEmail', userEmailParam || '');
@@ -35,29 +40,31 @@ const Login = () => {
 
     //to prevent reloading of page 
     e.preventDefault()
+    if (isSubmitting) return
+    setIsSubmitting(true)
     try {
       if (currentstate === 'Sign up') {
-        const response = await axios.post(backendURL + '/api/user/register', { name, email, password })
+        const response = await axios.post(`${backendURL}/api/user/register`, { name: name.trim(), email: email.trim(), password })
         if (response.data.success === true) {
           toast.success("Account created successfully")
           settoken(response.data.token)
           localStorage.setItem('token', response.data.token)
           localStorage.setItem('userid', response.data.userid || '');
-          localStorage.setItem('userEmail', response.data.email || email)
-          setUserEmail(response.data.email || email)
+          localStorage.setItem('userEmail', response.data.email || email.trim())
+          setUserEmail(response.data.email || email.trim())
         }
         else {
           toast.error(response.data.message)
         }
       }
       else {
-        const response = await axios.post(backendURL + '/api/user/login', { email, password })
+        const response = await axios.post(`${backendURL}/api/user/login`, { email: email.trim(), password })
         if (response.data.success === true) {
           localStorage.setItem('userid', response.data.userid || '');
           localStorage.setItem('token', response.data.token)
-          localStorage.setItem('userEmail', response.data.email || email)
-          setUserEmail(response.data.email || email)
-          toast.success("logged in successfully")
+          localStorage.setItem('userEmail', response.data.email || email.trim())
+          setUserEmail(response.data.email || email.trim())
+          toast.success("Logged in successfully")
           settoken(response.data.token)
         }
         else {
@@ -66,8 +73,10 @@ const Login = () => {
       }
     }
     catch (error) {
-      console.log(error.message)
-      toast.error(error.message)
+      console.error('Authentication failed:', error)
+      toast.error(error.response?.data?.message || (error.request ? 'Unable to reach the server. Please try again.' : error.message))
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -81,14 +90,14 @@ const Login = () => {
     <div>
       <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 mx-auto flex flex-col items-center bg-white">
         <h2 className="text-3xl prata-regular font-medium text-gray-800 mb-8 tracking-wider">{currentstate} &mdash;</h2>
-        {currentstate !== 'Login' && <input onChange={(e) => setname(e.target.value)} value={name} type="text" placeholder="Name" required className="w-full p-3 mb-4 text-sm text-gray-700 placeholder-gray-500 bg-white border border-gray-400 rounded-sm focus:outline-none focus:border-black transition duration-150" />}
-        <input onChange={(e) => setemail(e.target.value)} value={email} type="email" placeholder="Email" required className="w-full p-3 mb-4 text-sm text-gray-700 placeholder-gray-500 bg-white border border-gray-400 rounded-sm focus:outline-none focus:border-black transition duration-150" />
-        <input onChange={(e) => setpassword(e.target.value)} value={password} type="password" placeholder="Password" required className="w-full p-3 mb-8 text-sm text-gray-700 placeholder-gray-500 bg-white border border-gray-400 rounded-sm focus:outline-none focus:border-black transition duration-150" />
+        {currentstate !== 'Login' && <input onChange={(e) => setname(e.target.value)} value={name} type="text" autoComplete="name" placeholder="Name" required className="w-full p-3 mb-4 text-sm text-gray-700 placeholder-gray-500 bg-white border border-gray-400 rounded-sm focus:outline-none focus:border-black transition duration-150" />}
+        <input onChange={(e) => setemail(e.target.value)} value={email} type="email" autoComplete="email" placeholder="Email" required className="w-full p-3 mb-4 text-sm text-gray-700 placeholder-gray-500 bg-white border border-gray-400 rounded-sm focus:outline-none focus:border-black transition duration-150" />
+        <input onChange={(e) => setpassword(e.target.value)} value={password} type="password" autoComplete={currentstate === 'Login' ? 'current-password' : 'new-password'} minLength={currentstate === 'Sign up' ? 8 : undefined} placeholder="Password" required className="w-full p-3 mb-8 text-sm text-gray-700 placeholder-gray-500 bg-white border border-gray-400 rounded-sm focus:outline-none focus:border-black transition duration-150" />
         <div className="w-full flex justify-between text-sm mt-[-20px]">
           <p className="cursor-pointer">Forgot your password?</p>
           {currentstate === 'Login' ? <p onClick={() => setcurrentstate('Sign up')} className="cursor-pointer">Create account</p> : <p onClick={() => setcurrentstate('Login')} className="cursor-pointer">Login Here</p>}
         </div>
-        <button type="submit" className="bg-black text-white py-2 px-8 m-4 w-full active:bg-gray-700">{currentstate === 'Login' ? 'Sign In' : 'Sign Up'}</button>
+        <button type="submit" disabled={isSubmitting} className="bg-black text-white py-2 px-8 m-4 w-full active:bg-gray-700 disabled:opacity-60">{isSubmitting ? 'Please wait…' : currentstate === 'Login' ? 'Sign In' : 'Sign Up'}</button>
         <button onClick={()=>window.open(`${backendURL}/auth/google`,"_self")} type="button" className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-sm hover:bg-gray-50 transition duration-150">
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
